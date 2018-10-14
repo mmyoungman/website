@@ -7,6 +7,6 @@ pages:
     - python3 generate_website.py
     artifacts:
         paths:
-        - build
+        - public
     only:
     - master

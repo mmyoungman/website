@@ -21,12 +21,12 @@ def get_postdate(post_filepath):
     return result
 
 if __name__ == "__main__":
-    # create build/ or delete files in build/
-    if not os.path.exists("build/"):
-        os.makedirs("build/")
+    # create public/ or delete files in public/
+    if not os.path.exists("public/"):
+        os.makedirs("public/")
     else:
-        for filename in os.listdir("build/"):
-            os.remove("build/" + filename)
+        for filename in os.listdir("public/"):
+            os.remove("public/" + filename)
 
     # create post_list list and postlist_html string
     post_list = sorted(os.listdir("posts/"))
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     full_index_html = post_template.replace("{post}", index_html)
     full_index_html = full_index_html.replace("{postlist}", postlist_html)
 
-    f = open('build/index.html', "w")
+    f = open('public/index.html', "w")
     f.write(full_index_html)
     f.close()
     
@@ -81,7 +81,7 @@ if __name__ == "__main__":
     full_archive_html = post_template.replace("{post}", archive_html)
     full_archive_html = full_archive_html.replace("{postlist}", postlist_html)
     
-    f = open('build/archive.html', "w")
+    f = open('public/archive.html', "w")
     f.write(full_archive_html)
     f.close()
 
@@ -95,10 +95,10 @@ if __name__ == "__main__":
         full_post_html = post_template.replace("{post}", post_html)
         full_post_html = full_post_html.replace("{postlist}", postlist_html)
 
-        if not os.path.exists("build/"):
-            os.makedirs("build/")
+        if not os.path.exists("public/"):
+            os.makedirs("public/")
 
-        new_filepath = 'build/' + filename.rsplit(".", 1)[0] + '.html'
+        new_filepath = 'public/' + filename.rsplit(".", 1)[0] + '.html'
         f = open(new_filepath, "w")
         f.write(full_post_html)
         f.close()
