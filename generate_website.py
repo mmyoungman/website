@@ -20,7 +20,8 @@ def get_postdate(post_filepath):
     f.close()
     return result
 
-if __name__ == "__main__":
+def generate():
+    print("Generating html...")
     # create public/ or delete files in public/
     if not os.path.exists("public/"):
         os.makedirs("public/")
@@ -102,3 +103,9 @@ if __name__ == "__main__":
         f = open(new_filepath, "w")
         f.write(full_post_html)
         f.close()
+
+    print("Finished!")
+
+if __name__ == "__main__":
+    generate()
+

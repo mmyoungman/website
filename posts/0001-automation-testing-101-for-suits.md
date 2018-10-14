@@ -6,6 +6,8 @@ Automation Testing 101 For Suits
 
 First things first...
 
+Let's see livereload in action.
+
 ### Will automated testing remove the need for manual testing?
 
 For the vast majority of cases, no. Unless AIs take over testing, you will need a real human to sit in front of your product/service and test it, regardless of how comprehensiveness your your automated test suite is.
