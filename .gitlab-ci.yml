@@ -3,6 +3,7 @@ image: python:3.7
 pages:
     stage: deploy
     script:
+    - pip3 install markdown
     - python3 generate_website.py
     artifacts:
         paths:
