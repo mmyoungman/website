@@ -7,9 +7,8 @@
       <style type="text/css">
 
       * {
-         <!-- font-family: "Times New Roman", Times, serif; -->
-         font-family: Verdana, Geneva, sans-serif;
-    	 <!-- font-family: Arial, Helvetica, sans-serif; -->
+         font-family: "Times New Roman", Times, serif;
+         color: black;
       }
 
       p {
@@ -35,7 +34,6 @@
       }
 
       a {
-         color: black;
          text-decoration: underline;
       }
 
@@ -45,6 +43,7 @@
 
       body {
          margin: 10px;
+         background-color: white;
       }
 
       .grid {
@@ -57,14 +56,14 @@
          grid-area: header;
          padding: 0 20px;
          margin: 0;
+         border-bottom: solid 1px black;
       }
 
       .navbar {
          grid-area: navbar;
          padding: 0 20px;
          margin: 0;
-         background-color: white;
-         color: black;
+         border-bottom: solid 1px black;
          font-size: 1em;
       }
 
@@ -102,8 +101,8 @@
 
       .footer {
          grid-area: footer;
-         border-radius: 5px;
-         padding: 100px 20px;
+         border-top: solid 1px black;
+         padding: 50px 20px;
       }
 
 
@@ -134,10 +133,9 @@
             display: grid;
             grid-gap: 0px;
             grid-template-columns: 1fr 1fr 1fr 1fr;
-            grid-template-rows: none 1fr none 50px;
+            grid-template-rows: none none 50px;
             grid-template-areas:
-               "header  header  header  header" 
-               "navbar  navbar  navbar  navbar"
+               "header  header  navbar  navbar" 
                "sidebar content content content" 
                "footer  footer  footer  footer";
          }
@@ -191,4 +189,3 @@
    </body>
 
 </html>
-
