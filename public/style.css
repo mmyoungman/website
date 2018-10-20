@@ -1,0 +1,153 @@
+@font-face {
+    font-family: 'Assistant';
+    src: url('fonts/assistant/Assistant-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+   font-family: 'Assistant';
+}
+
+p {
+   font-size: 1em;
+   margin: 0 0 10px 0;
+}
+
+h1 {
+   font-size: 1.5em;
+   margin: 5px 0;
+}
+
+h2 {
+   font-size: 1.25em;
+   padding: 10px 0 10px 0;
+   margin: 0;
+}
+
+h3 {
+   font-size: 0.9em;
+   padding: 0;
+   margin: 0 0 10px 0;
+}
+
+a {
+   text-decoration: underline;
+}
+
+a:hover {
+   text-decoration: underline;
+   color: gray;
+}
+
+body {
+   margin: 10px;
+   background-color: white;
+}
+
+.grid {
+   color: black;
+   padding: 20px 0;
+   margin: 0;
+}
+
+.header {
+   grid-area: header;
+   padding: 0 20px;
+   margin: 0;
+   border-bottom: solid 1px black;
+}
+
+.navbar {
+   grid-area: navbar;
+   padding: 0 20px;
+   margin: 0;
+   border-bottom: solid 1px black;
+   font-size: 1em;
+}
+
+.navbar ul {
+   padding: 0;
+   margin: 10px;
+}
+
+.navbar li {
+   display: inline;
+   list-style-type: none;
+   text-align: center;
+   border-radius: 5px;
+   padding: 4px 1px;
+   margin: 0px;
+   width: auto;
+   text-decoration: none;
+}
+
+.content {
+   grid-area: content;
+   padding: 0 20px;
+}
+
+.sidebar {
+   grid-area: sidebar;
+   padding: 0 20px;
+   margin: 0 0 10px 0;
+}
+
+.sidebar .postlink  {
+   display: block;
+   padding: 3px;
+}
+
+.footer {
+   grid-area: footer;
+   border-top: solid 1px black;
+   padding: 50px 20px;
+}
+
+
+@media (max-width: 699px) {
+
+   .wrapper {
+      display: grid;
+      grid-gap: 0px;
+      grid-template-columns: 1fr;
+      grid-template-rows: none 1fr none none 50px;
+      grid-template-areas:
+         "header"
+         "navbar"
+         "content"
+         "sidebar"
+         "footer";
+   }
+   p { font-size: 1em; }
+   h1 { font-size: 1.0em; }
+   h2 { font-size: 1em; }
+   h3 { font-size: 0.9em; }
+   .navbar a { font-size: 0.9em; }
+
+}
+
+@media (min-width: 700px) {
+   .wrapper {
+      display: grid;
+      grid-gap: 0px;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      grid-template-rows: none none 50px;
+      grid-template-areas:
+         "header  header  navbar  navbar" 
+         "sidebar content content content" 
+         "footer  footer  footer  footer";
+   }
+
+   .navbar li {
+      width: 40px;
+      margin: 0 10px;
+   }
+}
+
+@media (min-width: 1100px) {
+   .wrapper {
+      width: 1100px;
+      margin: auto;
+   }
+}

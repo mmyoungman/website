@@ -27,6 +27,8 @@ if __name__ == "__main__":
         os.makedirs("public/")
     else:
         for filename in os.listdir("public/"):
+            if "fonts" in filename or "style.css" in filename:
+                continue
             os.remove("public/" + filename)
 
     # create post_list list and postlist_html string
