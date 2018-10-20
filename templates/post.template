@@ -166,6 +166,7 @@
          <div class="grid navbar">
             <ul>
                <li class="active"><a href="index.html">Home</a></li>
+               <li><a href="blog.html">Blog</a></li>
                <li><a href="archive.html">Archive</a></li>
                <li><a href="http://www.github.com/mmyoungman">GitHub</a></li>
             </ul>

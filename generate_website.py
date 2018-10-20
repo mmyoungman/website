@@ -31,6 +31,10 @@ def generate():
 
     # create post_list list and postlist_html string
     post_list = sorted(os.listdir("posts/"))
+    for post in post_list:
+        if "homepage.md" in post:
+            post_list.remove(post)
+
     postlist_html = ""
     i = 0
     for post in reversed(post_list):
@@ -47,20 +51,11 @@ def generate():
     f.close()
 
     # create index.html
-    index_markdown = ""
-    if len(post_list) >= 5:
-        for i in range(len(post_list)-1, len(post_list)-6, -1): # latest 5 posts on the index page
-            f = open('posts/' + post_list[i])
-            post_content = f.read()
-            f.close()
-            index_markdown += post_content + "<br><br><br>"
-    else:
-        for i in range(len(post_list)-1, -1, -1):
-            f = open('posts/' + post_list[i])
-            post_content = f.read()
-            f.close()
-            index_markdown += post_content + "<br><br><br>"
 
+    f = open('posts/homepage.md')
+    index_markdown = f.read()
+    f.close()
+    index_markdown += "<br><br><br>"
 
     index_html = markdown.markdown(index_markdown)
     full_index_html = post_template.replace("{post}", index_html)
@@ -69,11 +64,37 @@ def generate():
     f = open('public/index.html', "w")
     f.write(full_index_html)
     f.close()
+
+
+    # create blog.html
+    blog_markdown = ""
+    if len(post_list) >= 5:
+        for i in range(len(post_list)-1, len(post_list)-6, -1): # latest 5 posts on the blog page
+            f = open('posts/' + post_list[i])
+            post_content = f.read()
+            f.close()
+            blog_markdown += post_content + "<br><br><br>"
+    else:
+        for i in range(len(post_list)-1, -1, -1):
+            f = open('posts/' + post_list[i])
+            post_content = f.read()
+            f.close()
+            blog_markdown += post_content + "<br><br><br>"
+
+
+    blog_html = markdown.markdown(blog_markdown)
+    full_blog_html = post_template.replace("{post}", blog_html)
+    full_blog_html = full_blog_html.replace("{postlist}", postlist_html)
+
+    f = open('public/blog.html', "w")
+    f.write(full_blog_html)
+    f.close()
     
     # create archive.html
     archive_html = "<h1>Archive</h1>\n"
 
-    for post in reversed(sorted(os.listdir("posts/"))):
+    #for post in reversed(sorted(os.listdir("posts/"))):
+    for post in reversed(sorted(post_list)):
         postname = get_postname("posts/" + post)
         postdate = get_postdate("posts/" + post)
         archive_html += "<h2>" + postdate + "</h2>\n"
