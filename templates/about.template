@@ -113,12 +113,11 @@
             display: grid;
             grid-gap: 0px;
             grid-template-columns: 1fr;
-            grid-template-rows: none 1fr none none 50px;
+            grid-template-rows: none 1fr none 50px;
             grid-template-areas:
                "header"
                "navbar"
                "content"
-               "sidebar"
                "footer";
          }
          p { font-size: 1em; }
@@ -137,7 +136,7 @@
             grid-template-rows: none none 50px;
             grid-template-areas:
                "header  header  navbar  navbar" 
-               "sidebar content content content" 
+               "content content content content" 
                "footer  footer  footer  footer";
          }
 
@@ -170,14 +169,6 @@
                <li><a href="archive.html">Archive</a></li>
                <li><a href="http://www.github.com/mmyoungman">GitHub</a></li>
             </ul>
-         </div>
-
-         <div class="grid sidebar">
-            <h2>About Mark</h2>
-            <p>Mark is a software tester. He works at <a href="http://www.hiveit.co.uk/">Hive IT</a>.</p>
-
-            <h2>Posts</h2>
-            {{{postlist}}}
          </div>
 
          <div class="grid content">
