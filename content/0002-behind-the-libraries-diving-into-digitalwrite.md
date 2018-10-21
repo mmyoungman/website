@@ -1,4 +1,4 @@
-Diving into DigitalWrite -- Behind the Libraries -- Part One
+Diving into DigitalWrite -- Behind the Libraries Part One
 =
 
 20th October 2018

@@ -1,4 +1,4 @@
-Plunge into PinMode -- Behind the Libraries -- Part Two
+Plunge into PinMode -- Behind the Libraries Part Two
 =
 
 21th October 2018
