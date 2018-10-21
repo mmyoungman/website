@@ -5,10 +5,6 @@
     font-style: normal;
 }
 
-body {
-   font-family: 'Assistant';
-}
-
 p {
    font-size: 1em;
    margin: 0 0 10px 0;
@@ -41,7 +37,18 @@ a:hover {
    color: gray;
 }
 
+blockquote {
+    font-family: "Consolas", "courier new";
+    font-size: 0.9em;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
 body {
+   font-family: 'Assistant', Helvetica, Arial, sans-serif;
    margin: 10px;
    background-color: white;
 }
@@ -106,8 +113,7 @@ body {
 }
 
 
-@media (max-width: 699px) {
-
+@media (max-width: 799px) {
    .wrapper {
       display: grid;
       grid-gap: 0px;
@@ -125,10 +131,9 @@ body {
    h2 { font-size: 1em; }
    h3 { font-size: 0.9em; }
    .navbar a { font-size: 0.9em; }
-
 }
 
-@media (min-width: 700px) {
+@media (min-width: 800px) {
    .wrapper {
       display: grid;
       grid-gap: 0px;

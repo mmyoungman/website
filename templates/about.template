@@ -21,6 +21,9 @@
             </ul>
          </div>
 
+         <div class="grid sidebar">
+         </div>
+
          <div class="grid content">
             {{{post}}}
          </div>

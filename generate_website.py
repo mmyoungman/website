@@ -27,21 +27,27 @@ if __name__ == "__main__":
         os.makedirs("public/")
     else:
         for filename in os.listdir("public/"):
-            if "fonts" in filename or "style.css" in filename:
+            if filename in ["fonts", "images", "style.css"]:
                 continue
             os.remove("public/" + filename)
 
     # create post_list list and postlist_html string
-    post_list = sorted(os.listdir("content/"))
-    for post in post_list:
-        if "about.md" in post:
-            post_list.remove(post)
+    def is_a_post(name):
+        if "about.md" in name:
+            return False
+        elif name.startswith("0000-"):
+            return False
+        elif name.endswith(".md"):
+            return True
+        else:
+            return False
+    post_list = [post for post in sorted(os.listdir("content/")) if is_a_post(post)]
 
     postlist_html = ""
     i = 0
     for post in reversed(post_list):
         if i >= 15: # limit postlist to 15 posts
-            break
+                break
         i += 1
 
         post_filepath = "content/" + post
@@ -61,9 +67,9 @@ if __name__ == "__main__":
     f = open('content/about.md')
     about_markdown = f.read()
     f.close()
-    about_markdown += "<br><br><br>"
 
-    about_html = markdown.markdown(about_markdown)
+    about_html = markdown.markdown(about_markdown, extensions=['tables'])
+    about_html += "\n<br><br><br>\n"
     full_about_html = about_template.replace("{{{post}}}", about_html)
 
     f = open('public/about.html', "w")
@@ -77,15 +83,15 @@ if __name__ == "__main__":
             f = open('content/' + post_list[i])
             post_content = f.read()
             f.close()
-            blog_markdown += post_content + "<br><br><br>"
+            blog_markdown += post_content + "<br><br><br>\n\n"
     else:
         for i in range(len(post_list)-1, -1, -1):
             f = open('content/' + post_list[i])
             post_content = f.read()
             f.close()
-            blog_markdown += post_content + "<br><br><br>"
+            blog_markdown += post_content + "<br><br><br>\n\n"
 
-    blog_html = markdown.markdown(blog_markdown)
+    blog_html = markdown.markdown(blog_markdown, extensions=['tables'])
     full_blog_html = post_template.replace("{{{post}}}", blog_html)
     full_blog_html = full_blog_html.replace("{{{postlist}}}", postlist_html)
 
@@ -115,7 +121,7 @@ if __name__ == "__main__":
         post_markdown = f.read()
         f.close()
 
-        post_html = markdown.markdown(post_markdown)
+        post_html = markdown.markdown(post_markdown, extensions=['tables'])
         full_post_html = post_template.replace("{{{post}}}", post_html)
         full_post_html = full_post_html.replace("{{{postlist}}}", postlist_html)
 

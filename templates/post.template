@@ -23,7 +23,8 @@
 
          <div class="grid sidebar">
             <h2>About Mark</h2>
-            <p>Mark is a software tester. He works at <a href="http://www.hiveit.co.uk/">Hive IT</a>. <a href=about.html>[Read more]</a></p> 
+            <p>Mark is a software tester.<br>
+            <a href=about.html>[Read more]</a></p> 
             <p></p>
 
             <h2>Posts</h2>
