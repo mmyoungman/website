@@ -4,10 +4,18 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width,initial-scale=1.0">
       <title>Mark Youngman's Website</title>
-      <link rel='stylesheet' type='text/css' href='style.css'>
       <link rel='shortcut icon' href='images/favicon.ico' type='iamges/x-icon' />
+      <link rel='stylesheet' type='text/css' href='style.css'>
+      <style>
+         @media only screen and (min-width: 800px) {
+            .wrapper {
+               grid-template-areas:
+                  "header  header  navbar  navbar" 
+                  "content content content content" 
+                  "footer  footer  footer  footer";
+         }
+      </style>
    </head>
-
    <body>
       <div class="wrapper">
          <div class="grid header">
@@ -21,9 +29,6 @@
                <li><a href="archive.html">Archive</a></li>
                <li><a href="http://www.github.com/mmyoungman">GitHub</a></li>
             </ul>
-         </div>
-
-         <div class="grid sidebar">
          </div>
 
          <div class="grid content">
