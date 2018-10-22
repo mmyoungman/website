@@ -40,7 +40,7 @@ USART uses no clock wire that both devices can see. This saves the need for a th
 
 This is why the Serial.begin command is needed and why the Arduino IDE's Serial Monitor prints gibberish if you set the wrong rate. In my example above that didn't include a clock wire, the communication only occurs if both devices read/write every second. If the device receiving data instead read every 1.5 seconds, for example, then the sender's data wouldn't be recieved.
 
-![communication frame](images/0006-frameexample.png)
+![communication frame](images/0006-frameexample450px.png)
 
 This is taken from p223 of the ATmega328p datasheet, showing how USART sends bits. USART can send a different number of bits each frame, but in the above example, it sends nine bits (0 to 8). At the end of the frame, it can either idle or immediately send another frame.
 

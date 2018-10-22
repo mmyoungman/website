@@ -79,7 +79,7 @@ As the DDR and PORT registers controlled the mode and output of the Arduino's pi
 
 We're going to be reading the value of pin 12. To help us do this, I've created a simple circuit so we can turn pin 12 on or off using a button.
 
-![button ciruit diagram](images/0003-buttoncircuitdiagram.png)
+![button ciruit diagram](images/0003-buttoncircuitdiagram450px.png)
 
 I've used an 100k resistor. Pin 12 will be HIGH when the button isn't pressed, and LOW when it is.
 
@@ -115,85 +115,85 @@ The 4th bit of the PINB register is found at location 0x23. The bit is 1 if pin 
 Here is a handy table to show how the location of the bits that control the mode of any GPIO pin on the Arduino. I've grouped together the PIN, DDR, and PORT registers, as the pins are controlled by the same bits.
 
 <i>PINB 0x23 / DDRB 0x24 / PORTB 0x25</i>
-<table width="100%" cellspacing="0" cellpadding="4">
+<table cellspacing="0" cellpadding="4">
 <tbody>
 <tr valign="top">
-<td width="11%"><b>Bit</b></td>
-<td width="11%"><b>7</b></td>
-<td width="11%"><b>6</b></td>
-<td width="11%"><b>5</b></td>
-<td width="11%"><b>4</b></td>
-<td width="11%"><b>3</b></td>
-<td width="11%"><b>2</b></td>
-<td width="11%"><b>1</b></td>
-<td width="11%"><b>0</b></td>
+<td ><b>Bit</b></td>
+<td ><b>7</b></td>
+<td ><b>6</b></td>
+<td ><b>5</b></td>
+<td ><b>4</b></td>
+<td ><b>3</b></td>
+<td ><b>2</b></td>
+<td ><b>1</b></td>
+<td ><b>0</b></td>
 </tr>
 <tr valign="top">
-<td width="11%"><b>Pin</b></td>
-<td width="11%">X</td>
-<td width="11%">X</td>
-<td width="11%">13</td>
-<td width="11%">12</td>
-<td width="11%">11</td>
-<td width="11%">10</td>
-<td width="11%">9</td>
-<td width="11%">8</td>
+<td ><b>Pin</b></td>
+<td >X</td>
+<td >X</td>
+<td >13</td>
+<td >12</td>
+<td >11</td>
+<td >10</td>
+<td >9</td>
+<td >8</td>
 </tr>
 </tbody>
 </table>
 
 <i>PINC 0x26 / DDRC 0x27 / PORTC 0x28</i>
-<table width="100%" cellspacing="0" cellpadding="4">
+<table cellspacing="0" cellpadding="4">
 <tbody>
 <tr valign="top">
-<td width="11%"><b>Bit</b></td>
-<td width="11%"><b>7</b></td>
-<td width="11%"><b>6</b></td>
-<td width="11%"><b>5</b></td>
-<td width="11%"><b>4</b></td>
-<td width="11%"><b>3</b></td>
-<td width="11%"><b>2</b></td>
-<td width="11%"><b>1</b></td>
-<td width="11%"><b>0</b></td>
+<td ><b>Bit</b></td>
+<td ><b>7</b></td>
+<td ><b>6</b></td>
+<td ><b>5</b></td>
+<td ><b>4</b></td>
+<td ><b>3</b></td>
+<td ><b>2</b></td>
+<td ><b>1</b></td>
+<td ><b>0</b></td>
 </tr>
 <tr valign="top">
-<td width="11%"><b>Pin</b></td>
-<td width="11%">X</td>
-<td width="11%">RESET</td>
-<td width="11%">A5</td>
-<td width="11%">A4</td>
-<td width="11%">A3</td>
-<td width="11%">A2</td>
-<td width="11%">A1</td>
-<td width="11%">A0</td>
+<td ><b>Pin</b></td>
+<td >X</td>
+<td >RESET</td>
+<td >A5</td>
+<td >A4</td>
+<td >A3</td>
+<td >A2</td>
+<td >A1</td>
+<td >A0</td>
 </tr>
 </tbody>
 </table>
 
 <i>PIND 0x29 / DDRD 0x2A / PORTD 0x2B</i>
-<table width="100%" cellspacing="0" cellpadding="4">
+<table cellspacing="0" cellpadding="4">
 <tbody>
 <tr valign="top">
-<td width="11%"><b>Bit</b></td>
-<td width="11%"><b>7</b></td>
-<td width="11%"><b>6</b></td>
-<td width="11%"><b>5</b></td>
-<td width="11%"><b>4</b></td>
-<td width="11%"><b>3</b></td>
-<td width="11%"><b>2</b></td>
-<td width="11%"><b>1</b></td>
-<td width="11%"><b>0</b></td>
+<td ><b>Bit</b></td>
+<td ><b>7</b></td>
+<td ><b>6</b></td>
+<td ><b>5</b></td>
+<td ><b>4</b></td>
+<td ><b>3</b></td>
+<td ><b>2</b></td>
+<td ><b>1</b></td>
+<td ><b>0</b></td>
 </tr>
 <tr valign="top">
-<td width="11%"><b>Pin</b></td>
-<td width="11%">7</td>
-<td width="11%">6</td>
-<td width="11%">5</td>
-<td width="11%">4</td>
-<td width="11%">3</td>
-<td width="11%">2</td>
-<td width="11%">1</td>
-<td width="11%">0</td>
+<td ><b>Pin</b></td>
+<td >7</td>
+<td >6</td>
+<td >5</td>
+<td >4</td>
+<td >3</td>
+<td >2</td>
+<td >1</td>
+<td >0</td>
 </tr>
 </tbody>
 </table>

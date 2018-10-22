@@ -31,11 +31,11 @@ On an Arduino Uno, this bit of memory is located on the ATmega328p chip that is 
 
 By looking at the [Arduino's schematics](https://www.arduino.cc/en/uploads/Main/Arduino_Uno_Rev3-schematic.pdf), we can discover that pin 13 is connected to the PB5 pin (or PORTB5) of the ATmega328p chip. 
 
-![pin13 to pb5 from schematic](images/0002-pin13topb5fromschematic.png)
+![pin13 to pb5 from schematic](images/0002-pin13topb5fromschematic450px.png)
 
 The datasheet (p116) tells us that the bit that controls the output of that pin is found at the address [0x](https://en.wikipedia.org/wiki/0x)25. That hexidecimal address points to an 8-bit register, which is essentially a piece of memory that can store eight bits, eight 1’s and 0’s. According to the datasheet, the 5th bit stored in the register at address 0x25 controls whether pin 13 is on or off.
 
-![portb datasheet](images/0002-portbdatasheet.png)
+![portb datasheet](images/0002-portbdatasheet450px.png)
 
 __NOTE__: While the standard PC contains only one memory space, the ATmega328p actually contains [three separate memory spaces](http://playground.arduino.cc/Learning/Memory). This introduces ambiguity, as the address 0x25 can refer to multiple pieces of memory. If we try to access address 0x25 in C, however, the compiler gives us access to SRAM, which is what we want.
 

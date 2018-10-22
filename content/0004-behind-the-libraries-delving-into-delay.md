@@ -40,7 +40,7 @@ You'll also notice that it doesn't count sequentially. This is because the timer
 
 Both of these problems can be solved by changing configuration options for the timer. All three timers on the ATmega328p offer many options, depending on how you want to use them, which can be changed by alternating the bits of their associated control registers. The particular "waveform generation" mode used by timer1 is set in two control registers, TCCR1A and TCCR1B. You can see the modes listed on p171-2 of the ATmega328p datasheet.
 
-![timer1 modes datasheet](images/0004-timer1modesdatasheet.png)
+![timer1 modes datasheet](images/0004-timer1modesdatasheet450px.png)
 
 By default timer1 is set (amongst other things) to mode 1, which only allows it to count up to 255 -- as indicated in hexidecimal in the "TOP" column. This is because the Arduino sets up timer1 and timer2 for use with the [analogWrite function](https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/). By altering this to mode 0, it will then count to 0xFFFF or 65535. This can be done by setting the four waveform generation bits -- WGM10 to WGM13 -- all to zero. These bits are confusing located in two different locations. WGM10 and WGM11 are the 0th and 1st bits of TCCR1A (0x80) and WGM12 and WGM13 are the 3rd and 4th bits of TCCR1B (0x81).
 
