@@ -46,8 +46,9 @@ if __name__ == "__main__":
     postlist_html = ""
     i = 0
     for post in reversed(post_list):
-        if i >= 15: # limit postlist to 15 posts
-                break
+        if i >= 10: # limit length of postlist
+            postlist_html += "<a href=archive.html>[More Posts]</a>\n"
+            break
         i += 1
 
         post_filepath = "content/" + post

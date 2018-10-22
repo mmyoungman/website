@@ -3,7 +3,8 @@
    <head>
       <meta charset="UTF-8">
       <title>Mark Youngman's Website</title>
-      <link rel='stylesheet' type='text/css', href='style.css'>
+      <link rel='stylesheet' type='text/css' href='style.css'>
+      <link rel='shortcut icon' href='images/favicon.ico' type='iamges/x-icon' />
    </head>
 
    <body>
