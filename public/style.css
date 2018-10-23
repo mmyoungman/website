@@ -42,6 +42,14 @@ blockquote {
     font-size: 0.9em;
 }
 
+img {
+    max-width: 100%;
+}
+
+table {
+    max-width: 100%;
+}
+
 table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
