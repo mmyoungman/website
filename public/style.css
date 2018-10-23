@@ -44,10 +44,12 @@ blockquote {
 
 img {
     max-width: 50%;
+    overflow-x: auto;
 }
 
 table {
     max-width: 50%;
+    overflow-x: auto;
 }
 
 table, th, td {
