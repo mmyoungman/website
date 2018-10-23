@@ -44,7 +44,7 @@ blockquote {
 
 img, table {
     max-width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 table, th, td {
