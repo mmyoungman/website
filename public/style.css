@@ -43,11 +43,11 @@ blockquote {
 }
 
 img {
-    max-width: 100%;
+    max-width: 50%;
 }
 
 table {
-    max-width: 100%;
+    max-width: 50%;
 }
 
 table, th, td {
