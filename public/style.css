@@ -42,13 +42,8 @@ blockquote {
     font-size: 0.9em;
 }
 
-img {
-    max-width: 80%;
-    overflow-x: auto;
-}
-
-table {
-    max-width: 80%;
+img, table {
+    max-width: 100%;
     overflow-x: auto;
 }
 
