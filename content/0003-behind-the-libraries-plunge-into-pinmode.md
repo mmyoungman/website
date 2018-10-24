@@ -25,18 +25,18 @@ We saw in the previous article how changing the 5th bit of the PORTB register, l
 We can use this information to take out pinMode from our program using the same [bitwise operators]("https://en.wikipedia.org/wiki/Bitwise_operations_in_C") we used in the previous article:
 
 > void setup() {
-> > \*(uint8\_t \*)0x24 |= 0b00100000;
+> &nbsp;&nbsp;\*(uint8\_t \*)0x24 |= 0b00100000;
 >
 > }
 >
 > void loop() {
-> > \*(uint8\_t \*)0x25 |= 0b00100000;
-> >
-> > delay(1000);
-> > 
-> > \*(uint8\_t \*)0x25 &= 0b11011111;
-> > 
-> > delay(1000);
+> &nbsp;&nbsp;\*(uint8\_t \*)0x25 |= 0b00100000;
+>
+> &nbsp;&nbsp;delay(1000);
+>
+> &nbsp;&nbsp;\*(uint8\_t \*)0x25 &= 0b11011111;
+>
+> &nbsp;&nbsp;delay(1000);
 >
 > }
 
@@ -47,13 +47,13 @@ At this point, you might say to yourself, "I am wasting my time learning about t
 > }
 
 > void loop() {
-> > \*(uint8\_t \*)0x25 |= 0b00100000;
-> > 
-> > delay(1000);
-> >
-> > \*(uint8\_t \*)0x25 &= 0b11011111;
-> >
-> > delay(1000);
+> &nbsp;&nbsp;\*(uint8\_t \*)0x25 |= 0b00100000;
+>
+> &nbsp;&nbsp;delay(1000);
+>
+> &nbsp;&nbsp;\*(uint8\_t \*)0x25 &= 0b11011111;
+>
+> &nbsp;&nbsp;delay(1000);
 >
 > }
 
@@ -86,27 +86,27 @@ I've used an 100k resistor. Pin 12 will be HIGH when the button isn't pressed, a
 The 4th bit of the PINB register is found at location 0x23. The bit is 1 if pin 12 is HIGH, and 0 if pin 12 is LOW. I can use this to write a program that turns the Uno's on-board LED on when the button is pressed.
 
 > void setup() {
-> > pinMode(12, INPUT);
-> > 
-> > pinMode(13, OUTPUT); // to control on-board LED
-> > 
+> &nbsp;&nbsp;pinMode(12, INPUT);
+>
+> &nbsp;&nbsp;pinMode(13, OUTPUT); // to control on-board LED
+>
 > }
 > 
 > void loop() {
-> > // result == 0 if 4th bit is 0, result == 16 if 
-> > 
-> > // 4th bit is 1 (since 0b10000 == 16)
-> > 
-> > int result = \*(uint8\_t \*)0x23 & 0b00010000;
+> &nbsp;&nbsp;// result == 0 if 4th bit is 0, result == 16 if 
+>
+> &nbsp;&nbsp;// 4th bit is 1 (since 0b10000 == 16)
+>
+> &nbsp;&nbsp;int result = \*(uint8\_t \*)0x23 & 0b00010000;
 > 
-> > if(result == 0)
-> > > digitalWrite(13, HIGH);
-> >
-> > else
-> > >
-> > > digitalWrite(13, LOW);
-> > 
-> > delay(10);
+> &nbsp;&nbsp;if(result == 0)
+> &nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(13, HIGH);
+>
+> &nbsp;&nbsp;else
+>
+> &nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(13, LOW);
+>
+> &nbsp;&nbsp;delay(10);
 > 
 > }
 

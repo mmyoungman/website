@@ -5,15 +5,15 @@ Diving into DigitalWrite -- Behind the Libraries Part One
 -
 
 > void setup() {
-> > pinMode(13, OUTPUT);
+> &nbsp;&nbsp;pinMode(13, OUTPUT);
 >
 > }
 >
 > void loop() {
-> > digitalWrite(13, HIGH);
-> > delay(1000);
-> > digitalWrite(13, LOW);
-> > delay(1000);
+> &nbsp;&nbsp;digitalWrite(13, HIGH);
+> &nbsp;&nbsp;delay(1000);
+> &nbsp;&nbsp;digitalWrite(13, LOW);
+> &nbsp;&nbsp;delay(1000);
 >
 > }
 
@@ -64,18 +64,18 @@ This sets the 5th bit of the register at address 0x25 to 0, while not changing t
 Because we know the 5th bit in that particular register controls whether pin 13 is on or off, we can use these lines of code and remove digitalWrite from the default blink program.
 
 > void setup() {
-> > pinMode(13, OUTPUT);
+> &nbsp;&nbsp;pinMode(13, OUTPUT);
 > 
 > }
 > 
 > void loop() {
-> > \*(uint8\_t \*)0x25 |= 0b00100000;
-> >
-> > delay(1000);
-> >
-> > \*(uint8\_t \*)0x25 &= 0b11011111;
-> >
-> > delay(1000);
+> &nbsp;&nbsp;\*(uint8\_t \*)0x25 |= 0b00100000;
+>
+> &nbsp;&nbsp;delay(1000);
+>
+> &nbsp;&nbsp;\*(uint8\_t \*)0x25 &= 0b11011111;
+>
+> &nbsp;&nbsp;delay(1000);
 >
 > }
 
