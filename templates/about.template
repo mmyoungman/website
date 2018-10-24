@@ -2,7 +2,7 @@
 <html lang="en">
    <head>
       <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Mark Youngman's Website</title>
       <link rel='shortcut icon' href='images/favicon.ico' type='iamges/x-icon' />
       <link rel='stylesheet' type='text/css' href='style.css'>
