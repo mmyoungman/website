@@ -1,6 +1,7 @@
 import os
 import markdown
 
+import subprocess
 from ctypes import cdll
 from ctypes import c_char_p
 
@@ -24,10 +25,9 @@ def get_postdate(post_filepath):
     return result
 
 if __name__ == "__main__":
-    hello = cdll.LoadLibrary("./post-to-html/ctypes-test/helloworld.o")
-    hello.helloworld.restype=c_char_p
-    name = b"Mark"
-    print(hello.helloworld(name))
+    print("Compiling post_to_html.o...")
+    subprocess.call('./post-to-html/compile.sh')
+    print("Done!")
 
     print("Generating html...")
     # create public/ or delete files in public/
@@ -73,15 +73,17 @@ if __name__ == "__main__":
     f.close()
 
     # create about.html
-    f = open('content/about.md')
-    about_markdown = f.read()
+    f = open('content/about.post')
+    about_post = f.read()
     f.close()
 
-    about_html = markdown.markdown(about_markdown, extensions=['tables'])
-    about_html += "\n<br><br><br>\n"
-    full_about_html = about_template.replace("{{{post}}}", about_html)
+    about_post_b = bytes(about_post, encoding='utf-8')
+    post_to_html_lib = cdll.LoadLibrary("./post-to-html/post-to-html.o")
+    post_to_html_lib.convert_body.restype=c_char_p
+    about_html_b = post_to_html_lib.convert_body(about_post_b)
+    full_about_html = about_template.replace('{{{post}}}', about_html_b.decode('utf-8'))
 
-    f = open('public/about.html', "w")
+    f = open('public/about.html', 'w')
     f.write(full_about_html)
     f.close()
 

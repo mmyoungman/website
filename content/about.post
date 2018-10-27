@@ -1,0 +1,15 @@
+\title{About}
+\author{Mark Youngman}
+\date{27th October 2018}
+
+\begin{blurb}
+
+Mark is a software tester. \href{about.html}{[Read more]}
+
+\end{blurb}
+
+\begin{document}
+
+Mark is software tester at \href{https://www.hiveit.co.uk/}{Hive IT}.
+
+\end{document}
