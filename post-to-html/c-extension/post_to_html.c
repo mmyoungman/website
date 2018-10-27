@@ -1,10 +1,12 @@
 #include <Python.h>
 
 // Function 1: A simple 'hello world' function
-static PyObject* helloworld(PyObject* self, PyObject* args) 
-{   
+static PyObject* helloworld(PyObject* self, PyObject* args) {   
     printf("Hello World\n");
     return Py_None;
+}
+
+static PyObject* say_hello(PyObject* self, PyObject* args) {
 }
 
 // Our Module's Function Definition struct
@@ -25,7 +27,6 @@ static struct PyModuleDef postToHtml = {
 };
 
 // Initializes our module using our above struct
-PyMODINIT_FUNC PyInit_postToHtml(void)
-{
+PyMODINIT_FUNC PyInit_postToHtml(void) {
     return PyModule_Create(&postToHtml);
 }

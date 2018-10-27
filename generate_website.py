@@ -1,6 +1,8 @@
 import os
 import markdown
-import postToHtml
+
+from ctypes import cdll
+from ctypes import c_char_p
 
 def get_filename(filepath):
     filename = os.path.split(filepath)[1] # remove path
@@ -22,11 +24,11 @@ def get_postdate(post_filepath):
     return result
 
 if __name__ == "__main__":
-    print(postToHtml.helloworld())
-    print(postToHtml.helloworld())
-    print(postToHtml.helloworld())
-    print(postToHtml.helloworld())
-    print(postToHtml.helloworld())
+    hello = cdll.LoadLibrary("./post-to-html/ctypes-test/helloworld.o")
+    hello.helloworld.restype=c_char_p
+    name = b"Mark"
+    print(hello.helloworld(name))
+
     print("Generating html...")
     # create public/ or delete files in public/
     if not os.path.exists("public/"):
