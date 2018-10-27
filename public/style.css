@@ -5,6 +5,12 @@
     font-style: normal;
 }
 
+body {
+   font-family: 'Assistant', Helvetica, Arial, sans-serif;
+   margin: 10px;
+   background-color: white;
+}
+
 p {
    font-size: 1em;
    margin: 0 0 10px 0;
@@ -50,15 +56,16 @@ img, table {
     overflow-x: hidden;
 }
 
+img.about {
+    width: 200px;
+    height: auto;
+    padding: 20px;
+    float: left;
+}
+
 table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
-}
-
-body {
-   font-family: 'Assistant', Helvetica, Arial, sans-serif;
-   margin: 10px;
-   background-color: white;
 }
 
 .grid {
