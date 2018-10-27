@@ -23,6 +23,10 @@ def get_postdate(post_filepath):
 
 if __name__ == "__main__":
     print(postToHtml.helloworld())
+    print(postToHtml.helloworld())
+    print(postToHtml.helloworld())
+    print(postToHtml.helloworld())
+    print(postToHtml.helloworld())
     print("Generating html...")
     # create public/ or delete files in public/
     if not os.path.exists("public/"):
