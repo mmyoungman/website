@@ -3,6 +3,10 @@ image: python:3.7
 pages:
     stage: deploy
     script:
+    - cd post-to-html/python-test
+    - python setup.py build
+    - python setup.py install
+    - cd ../..
     - pip3 install markdown
     - python3 generate_website.py
     artifacts:

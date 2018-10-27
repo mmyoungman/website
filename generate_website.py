@@ -1,5 +1,6 @@
 import os
 import markdown
+import postToHtml
 
 def get_filename(filepath):
     filename = os.path.split(filepath)[1] # remove path
@@ -21,6 +22,7 @@ def get_postdate(post_filepath):
     return result
 
 if __name__ == "__main__":
+    print(postToHtml.helloworld())
     print("Generating html...")
     # create public/ or delete files in public/
     if not os.path.exists("public/"):
