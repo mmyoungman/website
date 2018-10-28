@@ -26,7 +26,10 @@ def get_postdate(post_filepath):
 
 if __name__ == "__main__":
     print("Compiling post_to_html.o...")
-    subprocess.call('./post-to-html/compile.sh')
+    os.remove("post-to-html/post-to-html.o")
+    subprocess.call('post-to-html/compile.sh')
+    post_to_html_lib = cdll.LoadLibrary("./post-to-html/post-to-html.o")
+    post_to_html_lib.convert_body.restype=c_char_p
     print("Done!")
 
     print("Generating html...")
@@ -41,7 +44,7 @@ if __name__ == "__main__":
 
     # create post_list list and postlist_html string
     def is_a_post(name):
-        if "about.md" in name:
+        if "about.post" in name:
             return False
         elif name.startswith("0000-"):
             return False
@@ -78,8 +81,6 @@ if __name__ == "__main__":
     f.close()
 
     about_post_b = bytes(about_post, encoding='utf-8')
-    post_to_html_lib = cdll.LoadLibrary("./post-to-html/post-to-html.o")
-    post_to_html_lib.convert_body.restype=c_char_p
     about_html_b = post_to_html_lib.convert_body(about_post_b)
     full_about_html = about_template.replace('{{{post}}}', about_html_b.decode('utf-8'))
 

@@ -11,12 +11,135 @@ void print_bytes(char* str) {
     printf("%s\n\n", str);
 }
 
+char *str_match(char *ptr, char *match) {
+    int matchLen = str_len(match);
+    for(int i = 0; i < matchLen; i++) {
+        if(ptr[i] != match[i]) { return 0; }
+    }
+    return ptr + matchLen;
+}
+
+char *str_copytocurlybracket(char *str, char **cmd) {
+    char *ptr = str;
+    while(*ptr != '{') {
+        ptr++;
+    }
+    int len = ptr - str;
+    *cmd = xmalloc(sizeof(char) * (len+1));
+    char *copyPtr = *cmd;
+    while(*str != '{') {
+        *copyPtr = *str;
+        str++, copyPtr++;
+    }
+    *copyPtr = '\0';
+    return str;
+}
+
+char *getStrArg(char *str, char *arg) {
+    if(*str != '{') { return -1; }
+    str++;
+    int len = 0;
+    for(int i = 0; i < 128; i++) {
+        if(str[i] == '}') { len = i; break; }
+        if(str[i] == '\0') { return -1; }
+        if(i == 127) { return -1; }
+    }
+    
+    for(int i = 0; i < len; i++) {
+        arg[i] = *str;
+        str++;
+    }
+    arg[len] = '\0';
+    return str++;
+}
+
+char *getIntArg(char *str, int *arg) {
+    if(*str != '{') { return -1; }
+    str++;
+    int len = 0;
+    for(int i = 0; i < 6; i++) {
+        if(str[i] == '}') { len = i; break; }
+        if(str[i] == '\0') { return -1; }
+        if(i == 5) { return -1; }
+    }
+    
+    char strArg[6];
+    for(int i = 0; i < len; i++) {
+        strArg[i] = *str;
+        str++;
+    }
+    strArg[len] = '\0';
+    *arg = str_toint(&strArg);
+    return ++str;
+}
+
+char *getTextToEnd(char *str, char *type, char **text) {
+    char *strPtr = str; 
+    while(*strPtr != '\0') {
+        if(*strPtr == '\\') {
+            char *cmd; 
+            char *strPtrBefore = strPtr;
+            strPtr++;
+            strPtr = str_copytocurlybracket(strPtr, &cmd);
+            if(str_equal(cmd, "end")) {
+                char arg[128];
+                strPtr = getStrArg(strPtr, &arg);
+                if(str_equal(arg, type)) {
+                    *strPtrBefore = '\0';
+                    *text = str_copy(str);
+                    return strPtr;
+                }
+            }
+            free(cmd);
+        }
+        strPtr++;
+    }
+    return -1;
+}
+
+char *convertToHtml(char *str) {
+    char *result = str_copy(""); 
+    char *strPtr = str;
+    char *strCur = str;
+
+    while(*strCur != '\0') {
+        if(*strCur == '\\') {
+            *strCur = '\0';
+            strCur++;
+            result = str_concat(result, strPtr);
+            strPtr = strCur;
+
+            char *cmd;
+            strCur = str_copytocurlybracket(strCur, &cmd);
+            if(str_equal(cmd, "href")) {
+                char link[256];
+                char linkText[128];
+                strCur = getStrArg(strCur, &link);
+                strCur++;
+                strCur = getStrArg(strCur, &linkText);
+                strCur++;
+                printf("link: %s, text: %s\n", link, linkText);
+                result = str_concat(result, "<a href=\"");
+                result = str_concat(result, link);
+                result = str_concat(result, "\">");
+                result = str_concat(result, linkText);
+                result = str_concat(result, "</a>");
+
+                strPtr = strCur;
+            }
+        }
+        strCur++;
+    }
+    result = str_concat(result, strPtr);
+    return result;
+}
+
 typedef struct Post {
     char title[128];
     char author[128];
-    int dateDay;
-    int dateMonth;
     int dateYear;
+    int dateMonth;
+    int dateDay;
     char **tags;
     char **categories;
     char series[128];
@@ -27,10 +150,65 @@ typedef struct Post {
 
 Post createPost(char* str) {
     Post post;
+    while(*str != '\0') {
+        if(*str == '\\') {
+            str++;
+            char *cmd;
+            str = str_copytocurlybracket(str, &cmd);
+            printf("cmd: %s\n", cmd);
+            if(str_equal(cmd, "title")) {
+                str = getStrArg(str, &post.title);
+                printf("post.title: %s\n", post.title);
+                free(cmd);
+            } else if(str_equal(cmd, "author")) {
+                str = getStrArg(str, &post.author);
+                printf("post.author: %s\n", post.author);
+                free(cmd);
+            } else if(str_equal(cmd, "date")) {
+                str = getIntArg(str, &post.dateYear);
+                printf("post.dateYear: %d\n", post.dateYear);
+                str = getIntArg(str, &post.dateMonth);
+                printf("post.dateMonth: %d\n", post.dateMonth);
+                str = getIntArg(str, &post.dateDay);
+                printf("post.dateDay: %d\n", post.dateDay);
+            } else if(str_equal(cmd, "begin")) {
+                char beginType[128];
+                str = getStrArg(str, &beginType);
+                printf("beginType: %s\n", beginType);
+                str++;
+                if(str_equal(beginType, "blurb")) {
+                    str = getTextToEnd(str, "blurb", &post.blurb);
+                    printf("post.blurb: %s\n", post.blurb);
+                } else if(str_equal(beginType, "document")) {
+                    str = getTextToEnd(str, "document", &post.body);
+                    printf("post.body: %s\n", post.body);
+                }
+            }
+        }
+        str++;
+    }
     return post;
 }
 
 char *convert_body(char* str) {
     Post post = createPost(str);
-    return str;
+
+    post.body = convertToHtml(post.body);
+
+    char *html = str_copy("<h1>");
+    html = str_concat(html, post.title);
+    html = str_concat(html, "</h1>\n");
+
+    if(!str_equal(post.title, "About")) {
+        html = str_concat(html, "<h2>");
+        html = str_concat(html, str_inttostr(post.dateYear));
+        html = str_concat(html, "-");
+        html = str_concat(html, str_inttostr(post.dateMonth));
+        html = str_concat(html, "-");
+        html = str_concat(html, str_inttostr(post.dateDay));
+        html = str_concat(html, "</h2>\n");
+    }
+    html = str_concat(html, post.body);
+    return html;
 }
+
