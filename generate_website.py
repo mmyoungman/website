@@ -26,7 +26,7 @@ def get_postdate(post_filepath):
 
 if __name__ == "__main__":
     print("Compiling post_to_html.o...")
-    os.remove("post-to-html/post-to-html.o")
+    #os.remove("post-to-html/post-to-html.o")
     subprocess.call('post-to-html/compile.sh')
     post_to_html_lib = cdll.LoadLibrary("./post-to-html/post-to-html.o")
     post_to_html_lib.convert_body.restype=c_char_p
