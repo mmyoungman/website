@@ -1,6 +1,10 @@
 import os
 import markdown
 
+import subprocess
+from ctypes import cdll
+from ctypes import c_char_p
+
 def get_filename(filepath):
     filename = os.path.split(filepath)[1] # remove path
     return filename.rsplit(".", 1)[0] # remove extension
@@ -21,6 +25,13 @@ def get_postdate(post_filepath):
     return result
 
 if __name__ == "__main__":
+    print("Compiling post_to_html.o...")
+    #os.remove("post-to-html/post-to-html.o")
+    subprocess.call('post-to-html/compile.sh')
+    post_to_html_lib = cdll.LoadLibrary("./post-to-html/post-to-html.o")
+    post_to_html_lib.convert_body.restype=c_char_p
+    print("Done!")
+
     print("Generating html...")
     # create public/ or delete files in public/
     if not os.path.exists("public/"):
@@ -33,7 +44,7 @@ if __name__ == "__main__":
 
     # create post_list list and postlist_html string
     def is_a_post(name):
-        if "about.md" in name:
+        if "about.post" in name:
             return False
         elif name.startswith("0000-"):
             return False
@@ -65,15 +76,15 @@ if __name__ == "__main__":
     f.close()
 
     # create about.html
-    f = open('content/about.md')
-    about_markdown = f.read()
+    f = open('content/about.post')
+    about_post = f.read()
     f.close()
 
-    about_html = markdown.markdown(about_markdown, extensions=['tables'])
-    about_html += "\n<br><br><br>\n"
-    full_about_html = about_template.replace("{{{post}}}", about_html)
+    about_post_b = bytes(about_post, encoding='utf-8')
+    about_html_b = post_to_html_lib.convert_body(about_post_b)
+    full_about_html = about_template.replace('{{{post}}}', about_html_b.decode('utf-8'))
 
-    f = open('public/about.html', "w")
+    f = open('public/about.html', 'w')
     f.write(full_about_html)
     f.close()
 

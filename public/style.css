@@ -57,7 +57,7 @@ img, table {
 }
 
 img.about {
-    width: 200px;
+    max-width: 40%;
     height: auto;
     padding: 20px;
     float: left;

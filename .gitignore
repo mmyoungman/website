@@ -1,5 +1,4 @@
 tags
 public/*.html
-post-to-html/c-extension/build
-post-to-html/ctypes-test/helloworld.o
+post-to-html/post-to-html.o
 
