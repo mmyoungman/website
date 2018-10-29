@@ -1,18 +1,27 @@
-Shuffling into Serial -- Behind the Libraries Part Five 
-=
+\title{Shuffling into Serial}
+\author{Mark Youngman}
+\date{2018}{10}{21}
 
-21st October 2018
--
+\series{Behind the Libraries}
+\seriespart{5}
+
+\tags{}
+\categories{}
+
+\begin{blurb}
+\end{blurb}
+
+\begin{document}
 
 We're slowly understanding various parts of the Arduino Uno and, more specifically, the ATmega328p chip. Next on the agenda are the various Serial commands we used, such as Serial.begin and Serial.print.
 
 Before we learn how to do serial communication without using the Arduino libraries, firstly we need to learn how functions like Serial.println work behind the scenes.
 
-### What is USART/Serial?
+\section{What is USART/Serial?}
 
 USART is hardware that allows two or more devices to communicate. In this instance, we're interested in one particular mode of the USART called asynchronous mode. This mode uses two wires to allow communication between two devices. One wire is used to receive data and the other to send data. Pins 0 and 1 on the Arduino Uno, which receive (RX) and transmit (TX) respectively, are used for this type of communication. Also for convenience the Arduino has a Serial-to-USB chip, separate from the ATmega328p, which converts serial data communicated over pin 0 and 1 into something that can be transmitted over USB, which is what allows the Arduino to connect to a computer and use the Arduino IDE.
 
-### How can two devices communicate?
+\section{How can two devices communicate?}
 
 Just as two people speaking must use the same language to communicate, two devices, to communicate data over one wire (or more), need to use the same protocol.
 
@@ -34,7 +43,7 @@ One way some protocols achieve this is by having a separate "clock" wire. A cloc
 
 In the above example, the sender writes (W) the next value to the wire each time the clock wire rises, and the receiver reads (R) each time the clock falls. If both sender and receiver can see the clock wire, then it makes it trivial to avoid writing and reading from the data wire at the same time.
 
-### No clock wire
+\section{No clock wire}
 
 USART uses no clock wire that both devices can see. This saves the need for a third wire, but adds the problem of synchronising the two devices. The way this synchronisation is achieved is through both devices having their own internal clock, and both being set to the same rate. 
 
@@ -46,7 +55,7 @@ This is taken from p223 of the ATmega328p datasheet, showing how USART sends bit
 
 You'll notice it works almost the same as my example of how eight bits could be sent. The one difference is the addition of the parity bit. This isn't something we'll be using in this article, but it is used to help check whether the data bits were sent correctly -- it tells the recepient whether the intended transmission is even or odd.
 
-### Example Code
+\section{Example Code}
 
 Now that we've explored how Serial works behind the scenes, we can now learn how to use USART directly. Here is an example program that repeatedly sends the character 'A' using the USART:
 
@@ -106,9 +115,9 @@ Here we loop continuously until the UDRE0 bit is 1. This bit is automatically se
 
 > UDR0 = 65;
 
-Serial Monitor uses ASCII, which basically translates the 8-bit value we send into its associated character. In this instance, 65 relates to the character 'A'. You can see which values relate to which characters by looking in the [ASCII table](https://simple.wikipedia.org/wiki/ASCII).
+Serial Monitor uses ASCII, which basically translates the 8-bit value we send into its associated character. In this instance, 65 relates to the character 'A'. You can see which values relate to which characters by looking in the \href{https://simple.wikipedia.org/wiki/ASCII}{ASCII table}.
 
-### Screw USART. Let's Bit Bang
+\section{Screw USART. Let's Bit Bang}
 
 Since this series is about understanding how things work on a hardware level, we can use everything we've learned in this article to transmit data without using USART and instead using digitalWrite and delayMicroseconds. We can do with software what USART did with hardware.
 
@@ -172,6 +181,8 @@ If we want to communicate at 9600 baud, that is 9600 bits per second or 1 / 9600
 
 This should repeatedly print 'A' to the Serial Monitor. To prove this isn't a fluke, you can change the transmitted data to print other characters. For example, if you change the HIGHs and LOWs so it transmits 66 or 0b01000010, it will print 'B' repeatedly.
 
-### End of the series?
+\section{End of the series?}
 
 I originally intended to go further with this series, but then I got a job as a tester and learning about the ATmega328p was no longer my priority. So while I've put these posts up, and it was fun to work this stuff out, you can consider this the end of Behind the Libraries.
+
+\end{document}

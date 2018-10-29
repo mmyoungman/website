@@ -1,14 +1,23 @@
-Plunge into PinMode -- Behind the Libraries Part Two
-=
+\title{Plunge into PinMode}
+\author{Mark Youngman}
+\date{2018}{10}{21}
 
-21th October 2018
--
+\series{Behind the Libraries}
+\seriespart{2}
 
-In [the first article of this series](0002-behind-the-libraries-diving-into-digitalwrite.html), we saw how to can turn pins on or off on an Arduino Uno by directly writing 1s or 0s to specific registers. Today, we'll explore how to change the mode of a pin.
+\tags{}
+\categories{}
+
+\begin{blurb}
+\end{blurb}
+
+\begin{document}
+
+In \href{0002-behind-the-libraries-diving-into-digitalwrite.html}{the first article of this series}, we saw how to can turn pins on or off on an Arduino Uno by directly writing 1s or 0s to specific registers. Today, we'll explore how to change the mode of a pin.
 
 The pinMode function essentially works the same as our replacement for digitalWrite, in that we replace the function call by changing a particular bit in specific memory location. But there is a wrinkle. digitalWrite only had two possible values to set a pin (HIGH or LOW) and therefore one bit of memory was sufficient to cover both options. With pinMode, this isn't the case, as it allows us to set three different modes: INPUT, OUTPUT, and INPUT\_PULLUP. We need at least two bits.
 
-### Four Modes?
+\section{Four Modes?}
 
 But when considering how the ATmega328p chip works, even though pinMode only acknowledges three modes, it is easier to consider there to be there to be four modes: INPUT, INPUT\_PULLUP, OUTPUT LOW, and OUTPUT HIGH.
 
@@ -22,7 +31,7 @@ We saw in the previous article how changing the 5th bit of the PORTB register, l
 | 1                       | 1                        | OUTPUT HIGH     |
 
 <br>
-We can use this information to take out pinMode from our program using the same [bitwise operators]("https://en.wikipedia.org/wiki/Bitwise_operations_in_C") we used in the previous article:
+We can use this information to take out pinMode from our program using the same \href{https://en.wikipedia.org/wiki/Bitwise_operations_in_C}{bitwise operators} we used in the previous article:
 
 > void setup() {
 > &nbsp;&nbsp;\*(uint8\_t \*)0x24 |= 0b00100000;
@@ -57,7 +66,7 @@ At this point, you might say to yourself, "I am wasting my time learning about t
 >
 > }
 
-### Switching Modes and the Pull-Up Disable Bit
+\section{Switching Modes and the Pull-Up Disable Bit}
 
 According to the datasheet (p99), there is a potential problem that can occur when switching modes from INPUT (so the PORT bit and DDRB bits are 0b00) to OUTPUT HIGH (0b11) or from OUTPUT LOW (0b10) to INPUT PULLUP (0b01), which is that you cannot change between these states instanteously as you must flip two bits, requiring two separate instructions. So after issuing the first instruction, you would temporarily be in a mode you don't want to be in, which in rare cases can cause problems.
 
@@ -73,7 +82,7 @@ I bring this up not because it is something that should concern us, but because 
 
 <br>
 
-### Reading from Pins
+\section{Reading from Pins}
 
 As the DDR and PORT registers controlled the mode and output of the Arduino's pins, whether a pin is currently HIGH or LOW is recorded in the PIN registers. The bits in the PIN registers automatically change depending on whether a high or low voltage is applied to the corresponding pin.
 
@@ -110,7 +119,7 @@ The 4th bit of the PINB register is found at location 0x23. The bit is 1 if pin 
 > 
 > }
 
-### Read and Write from Any Pin
+\section{Read and Write from Any Pin}
 
 Here is a handy table to show how the location of the bits that control the mode of any GPIO pin on the Arduino. I've grouped together the PIN, DDR, and PORT registers, as the pins are controlled by the same bits.
 
@@ -197,3 +206,5 @@ Here is a handy table to show how the location of the bits that control the mode
 </tr>
 </tbody>
 </table>
+
+\end{document}
