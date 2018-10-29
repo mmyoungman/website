@@ -190,6 +190,26 @@ Post createPost(char* str) {
     return post;
 }
 
+char *get_title(char *str) {
+    char title[256];
+    while(*str != '\0') {
+        if(*str == '\\') {
+            str++;
+            char *cmd;
+            str = str_copytocurlybracket(str, &cmd);
+            printf("cmd: %s\n", cmd);
+            if(str_equal(cmd, "title")) {
+                str = getStrArg(str, &title);
+                printf("title: %s\n", title);
+                free(cmd);
+                return str_copy(title);
+            }
+        }
+        //TODO: If \series, add it?
+    }
+    return -1;
+}
+
 char *convert_body(char* str) {
     Post post = createPost(str);
 

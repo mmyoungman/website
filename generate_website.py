@@ -11,9 +11,11 @@ def get_filename(filepath):
 
 def get_postname(post_filepath):
     f = open(post_filepath)
-    result = f.readline().rstrip("\n") # first line of post.md should be postname
+    file_b = bytes(f.read(), encoding='utf-8')
+    postname = post_to_html_lib.get_title(file_b)
+    print(postname)
     f.close()
-    return result
+    return postname.decode('utf-8')
 
 def get_postdate(post_filepath):
     f = open(post_filepath)
@@ -30,6 +32,7 @@ if __name__ == "__main__":
     subprocess.call('post-to-html/compile.sh')
     post_to_html_lib = cdll.LoadLibrary("./post-to-html/post-to-html.o")
     post_to_html_lib.convert_body.restype=c_char_p
+    post_to_html_lib.get_title.restype=c_char_p
     print("Done!")
 
     print("Generating html...")
@@ -48,7 +51,7 @@ if __name__ == "__main__":
             return False
         elif name.startswith("0000-"):
             return False
-        elif name.endswith(".md"):
+        elif name.endswith(".post"):
             return True
         else:
             return False
