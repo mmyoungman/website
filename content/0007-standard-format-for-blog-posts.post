@@ -21,11 +21,9 @@ Despite my static website relying on Python, I thought I'd write the post-to-htm
 
 To write it in C, I needed it to play nice with my generate\_website.py script. There were a few options here:
 
-\begin{itemize}
-\item Creating a C executable that includes the Python runtime so it can include the generate\_website.py script.
-\item Creating a Python C extension.
-\item Using ctypes to interface with a C executable.
-\end{itemize}
++ Creating a C executable that includes the Python runtime so it can include the generate\_website.py script.
++ Creating a Python C extension.
++ Using ctypes to interface with a C executable.
 
 I didn't want to compile the entire Python runtime each time I pushed a change, so I started by looking at an extension.
 

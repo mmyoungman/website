@@ -13,7 +13,6 @@ def get_postname(post_filepath):
     f = open(post_filepath)
     file_b = bytes(f.read(), encoding='utf-8')
     postname = post_to_html_lib.get_title(file_b)
-    print(postname)
     f.close()
     return postname.decode('utf-8')
 
@@ -92,21 +91,23 @@ if __name__ == "__main__":
     f.close()
 
     # create index.html
-    blog_markdown = ""
+    blog_posts_b = bytes("", encoding='utf-8')
     if len(post_list) >= 5:
         for i in range(len(post_list)-1, len(post_list)-6, -1): # latest 5 posts on the page
             f = open('content/' + post_list[i])
-            post_content = f.read()
+            post_content_b = bytes(f.read(), encoding='utf-8')
             f.close()
-            blog_markdown += post_content + "<br><br><br>\n\n"
+            post_content_b = post_to_html_lib.convert_body(post_content_b)
+            blog_posts_b += post_content_b + bytes("\n\\newline\\newline\n", encoding='utf-8')
     else:
         for i in range(len(post_list)-1, -1, -1):
             f = open('content/' + post_list[i])
-            post_content = f.read()
+            post_content_b = bytes(f.read(), encoding='utf-8')
             f.close()
-            blog_markdown += post_content + "<br><br><br>\n\n"
+            post_content_b = post_to_html_lib.convert_body(post_content_b)
+            blog_posts_b += post_content_b + bytes("\n\\newline\\newline\n", encoding='utf-8')
 
-    blog_html = markdown.markdown(blog_markdown, extensions=['tables'])
+    blog_html = blog_posts_b.decode('utf-8')
     full_blog_html = post_template.replace("{{{post}}}", blog_html)
     full_blog_html = full_blog_html.replace("{{{postlist}}}", postlist_html)
 
@@ -133,10 +134,11 @@ if __name__ == "__main__":
     # create html post files
     for filename in post_list:
         f = open("content/" + filename)
-        post_markdown = f.read()
+        post_b = bytes(f.read(), encoding='utf-8')
         f.close()
 
-        post_html = markdown.markdown(post_markdown, extensions=['tables'])
+        post_b = post_to_html_lib.convert_body(post_b)
+        post_html = post_b.decode('utf-8')
         full_post_html = post_template.replace("{{{post}}}", post_html)
         full_post_html = full_post_html.replace("{{{postlist}}}", postlist_html)
 
