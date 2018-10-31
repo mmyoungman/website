@@ -116,12 +116,13 @@ char *convertToHtml(char *str) {
             char *cmd;
             if(*strCur == '_' || *strCur == '\\' || *strCur == '*') { continue; } // Escape underscore
             strCur = str_copyCmd(strCur, &cmd);
+            printf("cmd: %s\n", cmd);
             if(str_equal(cmd, "href")) {
-                char link[1024];
+                char link[2048];
                 char linkText[1024];
-                strCur = getStrArg(strCur, &link);
+                strCur = getStrArg(strCur, link);
                 strCur++;
-                strCur = getStrArg(strCur, &linkText);
+                strCur = getStrArg(strCur, linkText);
                 strCur++;
                 printf("link: %s, text: %s\n", link, linkText);
                 result = str_concat(result, "<a href=\"");
@@ -133,7 +134,7 @@ char *convertToHtml(char *str) {
                 strPtr = strCur;
             } else if(str_equal(cmd, "section")) {
                 char sectionTitle[1024];
-                strCur = getStrArg(strCur, &sectionTitle);
+                strCur = getStrArg(strCur, sectionTitle);
                 strCur++;
                 printf("sectionTitle: %s\n", sectionTitle);
                 result = str_concat(result, "<br>\n<h3>");
@@ -141,6 +142,34 @@ char *convertToHtml(char *str) {
                 result = str_concat(result, "</h3>\n");
 
                 strPtr = strCur;
+            } else if(str_equal(cmd, "begin")) {
+                char beginType[1280];
+                strCur = getStrArg(strCur, beginType);
+                strCur++;
+                str_equal(beginType, "blockquote");
+                printf("insideBeginType: %s\n", beginType);
+                if(str_equal(beginType, "blockquote")) {
+                    result = str_concat(result, "<blockquote>\n");
+                    char *quoteText;
+                    strCur = getTextToEnd(strCur, "blockquote", &quoteText);
+                    char *quoteTextStart = quoteText;
+                    while(*quoteText != '\0') {
+                        if(*quoteText == '\n') {
+                            *quoteText = '\0';
+                            result = str_concat(result, quoteTextStart);
+                            result = str_concat(result, "<br>\n");
+                            quoteTextStart = quoteText + 1;
+                        }
+                        quoteText++;
+                    }
+                    result = str_concat(result, quoteText);
+                    result = str_concat(result, "\n</blockquote>\n");
+
+                    strCur++;
+                    strPtr = strCur;
+                } else if(str_equal(beginType, "itemize")) {
+                    // TODO
+                }
             }
         } else if(*strCur == '\n') {
             *strCur = '\0'; // Needed to copy text we've just gone over
@@ -179,6 +208,9 @@ Post createPost(char* str) {
     while(*str != '\0') {
         if(*str == '\\') {
             str++;
+            if(*str == '_') {
+                continue;
+            }
             char *cmd;
             str = str_copyCmd(str, &cmd);
             printf("cmd: %s\n", cmd);
@@ -199,7 +231,7 @@ Post createPost(char* str) {
                 printf("post.dateDay: %d\n", post.dateDay);
             } else if(str_equal(cmd, "begin")) {
                 char beginType[128];
-                str = getStrArg(str, &beginType);
+                str = getStrArg(str, beginType);
                 printf("beginType: %s\n", beginType);
                 str++;
                 if(str_equal(beginType, "blurb")) {
@@ -256,4 +288,19 @@ char *convert_body(char* str) {
     }
     html = str_concat(html, post.body);
     return html;
+}
+
+int main() {
+    FILE* fp = fopen("../content/0005-behind-the-libraries-inquiring-into-interrupts.post", "r");
+
+    fseek(fp, 0, SEEK_END);
+    long fsize = ftell(fp);
+    fseek(fp, 0, SEEK_SET);
+
+    char *buffer = malloc(fsize + 1);
+    fread(buffer, fsize, 1, fp);
+    fclose(fp);
+
+    //printf("%s\n", buffer);
+    printf("%s\n", convert_body(buffer));
 }

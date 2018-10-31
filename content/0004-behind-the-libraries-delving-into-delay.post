@@ -31,15 +31,15 @@ For our alternate delay function, we'll be using timer1 -- timer0 is already bei
 
 Timer1's 16-bit counter, TCNT1, is found at address 0x84. We can access it like so:
 
-> void setup() {
-> &nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
->
-> }
->
-> void loop() {
-> &nbsp;&nbsp;Serial.println(*(uint16_t *)0x84);
->
-> }
+\begin{blockquote}
+void setup() {
+&nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
+}
+
+void loop() {
+&nbsp;&nbsp;Serial.println(*(uint16_t *)0x84);
+}
+\end{blockquote}
 
 NOTE: TCNT1 is actually two 8-bit registers, TCNT1L and TCNT1H (low and high bytes respectively). These two registers are used together as one 16-bit value. So when we ask for a uint**16**\_t from address 0x84, behind the scenes our program is separately grabbing the values from 0x84 and 0x85.
 
@@ -53,19 +53,17 @@ Both of these problems can be solved by changing configuration options for the t
 
 By default timer1 is set (amongst other things) to mode 1, which only allows it to count up to 255 -- as indicated in hexidecimal in the "TOP" column. This is because the Arduino sets up timer1 and timer2 for use with the \href{https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/}{analogWrite function}. By altering this to mode 0, it will then count to 0xFFFF or 65535. This can be done by setting the four waveform generation bits -- WGM10 to WGM13 -- all to zero. These bits are confusing located in two different locations. WGM10 and WGM11 are the 0th and 1st bits of TCCR1A (0x80) and WGM12 and WGM13 are the 3rd and 4th bits of TCCR1B (0x81).
 
-> void setup() {
-> &nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
->
-> &nbsp;&nbsp;\*(uint8\_t \*)0x80 &= 0b11111100;
->  
-> &nbsp;&nbsp;\*(uint8\_t \*)0x81 &= 0b11100111;
-> 
-> }
-> 
-> void loop() {
-> &nbsp;&nbsp;Serial.println(\*(uint16\_t \*)0x84);
->
-> }
+\begin{blockquote}
+void setup() {
+&nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
+&nbsp;&nbsp;*(uint8\_t *)0x80 &= 0b11111100;
+&nbsp;&nbsp;*(uint8\_t *)0x81 &= 0b11100111;
+}
+
+void loop() {
+&nbsp;&nbsp;Serial.println(*(uint16\_t *)0x84);
+}
+\end{blockquote}
 
 You should now see in the Arduino IDE's Serial Monitor (if you disable autoscroll) the value of timer1 increase to 65535 before overflowing and counting up from zero again. 
 
@@ -98,33 +96,25 @@ We can change to the particular prescaler value we want using the clock select b
 
 We can show how using (or not using) a prescaler can speed up or slow down timer1:
 
-> void setup() {
-> &nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
-> &nbsp;&nbsp;
-> &nbsp;&nbsp;// Setting waveform generation mode 0
->
-> &nbsp;&nbsp;\*(uint8\_t \*)0x80 &= 0b11111100;
->
-> &nbsp;&nbsp;\*(uint8\_t \*)0x81 &= 0b11100111;
-> 
-> &nbsp;&nbsp;// Setting no prescaler
-> 
-> &nbsp;&nbsp;\*(uint8\_t \*)0x81 &= 0b11111001;
-> 
-> &nbsp;&nbsp;\*(uint8\_t \*)0x81 |= 0b00000001;
->  
-> &nbsp;&nbsp;// Setting / 1024 prescaler
-> 
-> &nbsp;&nbsp;//\*(uint8\_t \*)0x81 &= 0b11111101;
-> 
-> &nbsp;&nbsp;//\*(uint8\_t \*)0x81 |= 0b00000101;
->
-> }
-> 
-> void loop() {
-> &nbsp;&nbsp;Serial.println(*(uint16_t *)0x84);
-> 
-> }
+\begin{blockquote}
+void setup() {
+&nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
+&nbsp;&nbsp;
+&nbsp;&nbsp;// Setting waveform generation mode 0
+&nbsp;&nbsp;*(uint8\_t *)0x80 &= 0b11111100;
+&nbsp;&nbsp;*(uint8\_t *)0x81 &= 0b11100111;
+&nbsp;&nbsp;// Setting no prescaler
+&nbsp;&nbsp;*(uint8\_t *)0x81 &= 0b11111001;
+&nbsp;&nbsp;*(uint8\_t *)0x81 |= 0b00000001;
+&nbsp;&nbsp;// Setting / 1024 prescaler
+&nbsp;&nbsp;//*(uint8\_t *)0x81 &= 0b11111101;
+&nbsp;&nbsp;//*(uint8\_t *)0x81 |= 0b00000101;
+}
+
+void loop() {
+&nbsp;&nbsp;Serial.println(*(uint16_t *)0x84);
+}
+\end{blockquote}
 
 You can uncomment or comment the no prescaler and 1024 prescaler settings and watch how it speeds up or slows down the counter. You'll find that with no prescaler it should overflow 16,000,000 / 65536 = 244 times a second, which is too fast for Serial.println to keep up. It won't appear to count sequentially as the counter is counting more than 65535 times in the time it takes to print to Serial Monitor. With 1024 prescaler, Serial.println will be able to keep up and more clearly show the timer1's count registers counting up to 65535 before overflowing.
 
@@ -138,41 +128,29 @@ Even though using prescalers slows down the timer, many projects require the abi
 
 But there is a solution: to introduce another variable to count the counter. This is perhaps easiest to demonstrate as a program that blinks an LED:
 
-> void setup() {
-> &nbsp;&nbsp;pinMode(13, OUTPUT);
->  
-> &nbsp;&nbsp;// Setting waveform generation mode 0
-> 
-> &nbsp;&nbsp;\*(uint8\_t \*)0x80 &= 0b11111100;
-> 
-> &nbsp;&nbsp;\*(uint8\_t \*)0x81 &= 0b11100111;
->  
-> &nbsp;&nbsp;// Setting / 1024 prescaler
->
-> &nbsp;&nbsp;\*(uint8\_t \*)0x81 &= 0b11111101;
->
-> &nbsp;&nbsp;\*(uint8\_t \*)0x81 |= 0b00000101;
->
-> }
-> 
-> int count = 0;
-> 
-> void loop() {
-> &nbsp;&nbsp;if(*(uint16_t *)0x84 > 16000) {
->
-> &nbsp;&nbsp;&nbsp;&nbsp;count++;
->
-> &nbsp;&nbsp;&nbsp;&nbsp;\*(uint16\_t \*)0x84 = 0;
->
-> &nbsp;&nbsp;&nbsp;&nbsp;if(count >= 10) {
->
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(13, !digitalRead(13));
->
-> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count = 0;
->
-> &nbsp;&nbsp;}
-> 
-> }
+\begin{blockquote}
+void setup() {
+&nbsp;&nbsp;pinMode(13, OUTPUT);
+&nbsp;&nbsp;// Setting waveform generation mode 0
+&nbsp;&nbsp;*(uint8\_t *)0x80 &= 0b11111100;
+&nbsp;&nbsp;*(uint8\_t *)0x81 &= 0b11100111;
+&nbsp;&nbsp;// Setting / 1024 prescaler
+&nbsp;&nbsp;*(uint8\_t *)0x81 &= 0b11111101;
+&nbsp;&nbsp;*(uint8\_t *)0x81 |= 0b00000101;
+}
+
+int count = 0;
+
+void loop() {
+&nbsp;&nbsp;if(*(uint16_t *)0x84 > 16000) {
+&nbsp;&nbsp;&nbsp;&nbsp;count++;
+&nbsp;&nbsp;&nbsp;&nbsp;*(uint16\_t *)0x84 = 0;
+&nbsp;&nbsp;&nbsp;&nbsp;if(count >= 10) {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(13, !digitalRead(13));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count = 0;
+&nbsp;&nbsp;}
+}
+\end{blockquote}
 
 Given what we know, we can work out how often the Arduino's on-board LED should toggle. Count should be incremented every 16Mhz / 1024/ 16000 times a second. We're toggling the on-board LED every time count gets to 10, so it should toggle every 16000000 / 1024 / 16000 / 10 times a second or 0.01 times a second, or once every 10 seconds.
 

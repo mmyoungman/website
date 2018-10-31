@@ -25,64 +25,60 @@ It also means we can respond quicker to the motion sensor -- which is the import
 
 Firstly, we'll tackle how to respond quickly to the timer. Previously, we constantly polled the value of TCNT1 to check whether it had gone beyond a certain value.:
 
-> if(TCNT1 > 16000) {
-> &nbsp;&nbsp;// Do stuff
-> 
-> &nbsp;&nbsp;TCNT1 = 0; // reset timer1
->
-> }
+\begin{blockquote}
+if(TCNT1 > 16000) {
+&nbsp;&nbsp;// Do stuff
+
+&nbsp;&nbsp;TCNT1 = 0; // reset timer1
+
+}
+\end{blockquote}
 
 Now we want timer1 to do this checking for us. One way we can avoid constantly polling TCNT1 is have timer1 trigger an interrupt every time timer1 overflows:
 
-> void setup() {
-> &nbsp;&nbsp;Serial.begin(19200);
->
-> &nbsp;&nbsp;// Setting waveform generation mode 0
->
-> &nbsp;&nbsp;TCCR1A &= 0b11111100;
->
-> &nbsp;&nbsp;TCCR1B &= 0b11100111;
->
-> &nbsp;&nbsp;// Setting 1024 prescaler
->
-> &nbsp;&nbsp;TCCR1B &= 0b11111101;
->
-> &nbsp;&nbsp;TCCR1B |= 0b00000101;
->
-> &nbsp;&nbsp;// Set TIMER1\_OVF interrupt on
->
-> &nbsp;&nbsp;TIMSK1 |= 0b00000001;
->
-> &nbsp;&nbsp;volatile uint16\_t count = 0;
->
-> }
-> 
-> void loop() {
-> &nbsp;&nbsp;Serial.print("Count: ");
->
-> &nbsp;&nbsp;Serial.println(count);
-> 
-> }
-> 
-> ISR(TIMER1\_OVF\_vect) {
->
-> &nbsp;&nbsp;count++;
->
-> }
+\begin{blockquote}
+void setup() {
+&nbsp;&nbsp;Serial.begin(19200);
+&nbsp;&nbsp;// Setting waveform generation mode 0
+&nbsp;&nbsp;TCCR1A &= 0b11111100;
+&nbsp;&nbsp;TCCR1B &= 0b11100111;
+&nbsp;&nbsp;// Setting 1024 prescaler
+&nbsp;&nbsp;TCCR1B &= 0b11111101;
+&nbsp;&nbsp;TCCR1B |= 0b00000101;
+&nbsp;&nbsp;// Set TIMER1\_OVF interrupt on
+&nbsp;&nbsp;TIMSK1 |= 0b00000001;
+&nbsp;&nbsp;volatile uint16\_t count = 0;
+}
+
+void loop() {
+&nbsp;&nbsp;Serial.print("Count: ");
+&nbsp;&nbsp;Serial.println(count);
+}
+
+ISR(TIMER1\_OVF\_vect) {
+&nbsp;&nbsp;count++;
+}
+\end{blockquote}
 
 There are few new things here to explain. 
 
-> TIMSK1 |= 0b00000001; // Set TIMER1\_OVF interrupt on
+\begin{blockquote}
+TIMSK1 |= 0b00000001; // Set TIMER1\_OVF interrupt on
+\end{blockquote}
 
 TIMSK1 is the register that allows us to turn interrupts on or off that are associated with timer1. In this particular program, we set the bit that turns timer1's overflow interrupt on. Every time TCNT1 ticks from 65535 to 0, this interrupt is triggered.
 
-> volatile uint16\_t count = 0;
+\begin{blockquote}
+volatile uint16\_t count = 0;
+\end{blockquote}
 
 The volatile keyword tells the compiler to not assume that count doesn't change. This can be necessary because interrupts can change variables in ways that the compiler isn't expecting. When compiling our code into something that the ATmega328p understands, the compiler may make the assumption that the count variable doesn't change, since loop() doesn't call any other functions that affect count. 
 
 Having compilers make such an assumptions can be good, as it often makes the final program run more efficiently. When using interrupts, however, this assumption can be incorrect.
 
-> ISR(TIMER1\_OVF\_vect) {
+\begin{blockquote}
+ISR(TIMER1\_OVF\_vect) {
+\end{blockquote}
 
 ISR stands for interrupt service routine. This is where we put the code we want to run when the associated interrupt is called. TIMER1\_OVF\_vect, as its name suggests, refers to timer1's overflow interrupt.
 
@@ -108,61 +104,41 @@ Given that the Arduino's crystal ocsillator runs at 16MHz, for convenience we'll
 
 Since timer1 no longer overflows back to zero, the timer1 overflow interrupt no longer works for us. So instead we'll use the timer1 compare match A interrupt. This interrupt triggers when the value of TCNT1 matches the value of OCR1A.
 
-> void setup() {
->
-> &nbsp;&nbsp;pinMode(13, OUTPUT);
->
-> &nbsp;&nbsp;
->
-> &nbsp;&nbsp;// mode 4, CTC (Clear Timer on Compare)
->
-> &nbsp;&nbsp;TCCR1A &= 0b11111100; 
->
-> &nbsp;&nbsp;TCCR1B &= 0b11100111;
->
-> &nbsp;&nbsp;TCCR1B |= 0b00001000;
-> 
-> &nbsp;&nbsp;TCCR1B &= 0b11111001;
->
-> &nbsp;&nbsp;TCCR1B |= 0b00000001; // no prescaler
-> 
-> &nbsp;&nbsp;OCR1A = 16000; // COMPA interrupt called every 16000000/16000 = 0.01 seconds
-> 
-> &nbsp;&nbsp;//SET STATUS REGISTER SO GLOBAL INTERRUPTS ARE ENABLED
->
-> &nbsp;&nbsp;//EVEN THOUGH IT IS NOT NECESSARY
-> 
-> &nbsp;&nbsp;TIMSK1 |= 0b00000010; // Set COMPA interrupt on
-> }
-> 
-> void loop() {
->
-> &nbsp;&nbsp;digitalWrite(13, HIGH);
->
-> &nbsp;&nbsp;delay2(1000);
->
-> &nbsp;&nbsp;digitalWrite(13, LOW);
->
-> &nbsp;&nbsp;delay2(1000);
-> }
-> 
-> volatile uint16\_t count;
-> 
-> ISR(TIMER1\_COMPA\_vect) {
->
-> &nbsp;&nbsp;count++;
->
-> }
-> 
-> void delay2(uint16\_t milliseconds) {
->
-> &nbsp;&nbsp;count = 0;
->
-> &nbsp;&nbsp;TCNT1 = 0;
->
-> &nbsp;&nbsp;while(count < milliseconds);
->
-> }
+\begin{blockquote}
+void setup() {
+&nbsp;&nbsp;pinMode(13, OUTPUT);
+&nbsp;&nbsp;
+&nbsp;&nbsp;// mode 4, CTC (Clear Timer on Compare)
+&nbsp;&nbsp;TCCR1A &= 0b11111100; 
+&nbsp;&nbsp;TCCR1B &= 0b11100111;
+&nbsp;&nbsp;TCCR1B |= 0b00001000;
+&nbsp;&nbsp;TCCR1B &= 0b11111001;
+&nbsp;&nbsp;TCCR1B |= 0b00000001; // no prescaler
+&nbsp;&nbsp;OCR1A = 16000; // COMPA interrupt called every 16000000/16000 = 0.01 seconds
+&nbsp;&nbsp;//SET STATUS REGISTER SO GLOBAL INTERRUPTS ARE ENABLED
+&nbsp;&nbsp;//EVEN THOUGH IT IS NOT NECESSARY
+&nbsp;&nbsp;TIMSK1 |= 0b00000010; // Set COMPA interrupt on
+}
+
+void loop() {
+&nbsp;&nbsp;digitalWrite(13, HIGH);
+&nbsp;&nbsp;delay2(1000);
+&nbsp;&nbsp;digitalWrite(13, LOW);
+&nbsp;&nbsp;delay2(1000);
+}
+
+volatile uint16\_t count;
+
+ISR(TIMER1\_COMPA\_vect) {
+&nbsp;&nbsp;count++;
+}
+
+void delay2(uint16\_t milliseconds) {
+&nbsp;&nbsp;count = 0;
+&nbsp;&nbsp;TCNT1 = 0;
+&nbsp;&nbsp;while(count < milliseconds);
+}
+\end{blockquote}
 
 While we used the volatile keyword in the previous program as good practice, in this particular program the keyword is necessary. If you remove the keyword, the compiler looks at the delay2 function, assumes that checking "count < milliseconds" is pointless and can be skipped, and so it will get stuck in delay2's while loop forever.
 
