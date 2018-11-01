@@ -35,7 +35,7 @@ The \href{https://github.com/lepture/python-livereload}{livereload Python librar
 
 \section{Automate where possible}
 
-Manually regenerating and uploading the webiste would be a pain, but thankfully \href{http://www.gitlab.com}{GitLab} runs the generate\_website.py script whenever I push to the repository and serves all files in the public directory. There may be an alternate solution in git hooks.
+Manually regenerating and uploading the webiste would be a pain, but thankfully \href{http://www.gitlab.com}{GitLab} runs the generate_website.py script whenever I push to the repository and serves all files in the public directory. There may be an alternate solution in git hooks.
 
 In it's current form, there's lots of opportunity for improvement. So I've added a "Part One" to the title, as I expect further development.
 

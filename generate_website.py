@@ -18,12 +18,10 @@ def get_postname(post_filepath):
 
 def get_postdate(post_filepath):
     f = open(post_filepath)
-    for i, line in enumerate(f):
-        if i == 3: # the post date should be on the fourth line of the .md file
-            result = line.rstrip("\n")
-            break
+    file_b = bytes(f.read(), encoding='utf-8')
+    postdate = post_to_html_lib.get_date(file_b)
     f.close()
-    return result
+    return postdate.decode('utf-8')
 
 if __name__ == "__main__":
     print("Compiling post_to_html.o...")
@@ -32,6 +30,7 @@ if __name__ == "__main__":
     post_to_html_lib = cdll.LoadLibrary("./post-to-html/post-to-html.o")
     post_to_html_lib.convert_body.restype=c_char_p
     post_to_html_lib.get_title.restype=c_char_p
+    post_to_html_lib.get_date.restype=c_char_p
     print("Done!")
 
     print("Generating html...")

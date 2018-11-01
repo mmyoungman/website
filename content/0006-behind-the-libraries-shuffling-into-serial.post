@@ -29,7 +29,7 @@ The protocol dictates how the communication occurs. On a single wire, we only ha
 
 Let's look at an example. We might keep a wire HIGH permanently when communication isn't occuring. If we want to start transmitting data, we bring it LOW for one second to indicate to the receiver that communication is about to begin. Then we set the wire HIGH or LOW depending on what the particular bit we want to transmit is, and leave it at that for a second, and then repeat that until we've transmitted 8 bits after 8 seconds. Finally, after the data has been transmitted, we go HIGH to indicate the transmission has finished and either stay HIGH or go LOW again to transmit another byte of data.
 
-![communication example 1](images/0006-communicationexample.png)
+\includegraphics{images/0006-communicationexample.png}
 
 With this method, we have transmitted 8 bits in a "frame".
 
@@ -39,7 +39,7 @@ It is important that the sender sets the wire HIGH or LOW at a different time to
 
 One way some protocols achieve this is by having a separate "clock" wire. A clock wire operates like the Arduino Uno's crystal oscillator, in that it toggles on and off at a set frequency.
 
-![communication example 2](images/0006-communicationexample2.png)
+\includegraphics{images/0006-communicationexample2.png}
 
 In the above example, the sender writes (W) the next value to the wire each time the clock wire rises, and the receiver reads (R) each time the clock falls. If both sender and receiver can see the clock wire, then it makes it trivial to avoid writing and reading from the data wire at the same time.
 
@@ -49,7 +49,7 @@ USART uses no clock wire that both devices can see. This saves the need for a th
 
 This is why the Serial.begin command is needed and why the Arduino IDE's Serial Monitor prints gibberish if you set the wrong rate. In my example above that didn't include a clock wire, the communication only occurs if both devices read/write every second. If the device receiving data instead read every 1.5 seconds, for example, then the sender's data wouldn't be recieved.
 
-![communication frame](images/0006-frameexample450px.png)
+\includegraphics{images/0006-frameexample450px.png}
 
 This is taken from p223 of the ATmega328p datasheet, showing how USART sends bits. USART can send a different number of bits each frame, but in the above example, it sends nine bits (0 to 8). At the end of the frame, it can either idle or immediately send another frame.
 

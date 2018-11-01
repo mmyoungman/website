@@ -41,7 +41,7 @@ void loop() {
 }
 \end{blockquote}
 
-NOTE: TCNT1 is actually two 8-bit registers, TCNT1L and TCNT1H (low and high bytes respectively). These two registers are used together as one 16-bit value. So when we ask for a uint**16**\_t from address 0x84, behind the scenes our program is separately grabbing the values from 0x84 and 0x85.
+NOTE: TCNT1 is actually two 8-bit registers, TCNT1L and TCNT1H (low and high bytes respectively). These two registers are used together as one 16-bit value. So when we ask for a uint16_t from address 0x84, behind the scenes our program is separately grabbing the values from 0x84 and 0x85.
 
 On running this program, you'll notice that it doesn't work as expected. We might expect 16-bit timer to count up to 65535 (when all 16 bits are 1), but it only counts up to 255.
 
@@ -49,25 +49,25 @@ You'll also notice that it doesn't count sequentially. This is because the timer
 
 Both of these problems can be solved by changing configuration options for the timer. All three timers on the ATmega328p offer many options, depending on how you want to use them, which can be changed by alternating the bits of their associated control registers. The particular "waveform generation" mode used by timer1 is set in two control registers, TCCR1A and TCCR1B. You can see the modes listed on p171-2 of the ATmega328p datasheet.
 
-![timer1 modes datasheet](images/0004-timer1modesdatasheet450px.png)
+\includegraphics{images/0004-timer1modesdatasheet450px.png}
 
 By default timer1 is set (amongst other things) to mode 1, which only allows it to count up to 255 -- as indicated in hexidecimal in the "TOP" column. This is because the Arduino sets up timer1 and timer2 for use with the \href{https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/}{analogWrite function}. By altering this to mode 0, it will then count to 0xFFFF or 65535. This can be done by setting the four waveform generation bits -- WGM10 to WGM13 -- all to zero. These bits are confusing located in two different locations. WGM10 and WGM11 are the 0th and 1st bits of TCCR1A (0x80) and WGM12 and WGM13 are the 3rd and 4th bits of TCCR1B (0x81).
 
 \begin{blockquote}
 void setup() {
 &nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
-&nbsp;&nbsp;*(uint8\_t *)0x80 &= 0b11111100;
-&nbsp;&nbsp;*(uint8\_t *)0x81 &= 0b11100111;
+&nbsp;&nbsp;*(uint8_t *)0x80 &= 0b11111100;
+&nbsp;&nbsp;*(uint8_t *)0x81 &= 0b11100111;
 }
 
 void loop() {
-&nbsp;&nbsp;Serial.println(*(uint16\_t *)0x84);
+&nbsp;&nbsp;Serial.println(*(uint16_t *)0x84);
 }
 \end{blockquote}
 
 You should now see in the Arduino IDE's Serial Monitor (if you disable autoscroll) the value of timer1 increase to 65535 before overflowing and counting up from zero again. 
 
-![serial print tcnt1 test](images/0004-serialprinttcnt1test.png)
+\includegraphics{images/0004-serialprinttcnt1test.png}
 
 You'll also notice that the counter is increasing almost 1000 times in the time its takes our program to print its value. This is because serial communication is slow compared to our timer!
 
@@ -81,18 +81,7 @@ One configuration option the Arduino's timers offer us is to slow down the speed
 
 We can change to the particular prescaler value we want using the clock select bits found in the 0-2 bits of the TCCR1B register. We can see what the various options do in the ATmega328p datasheet p173-4:
 
-| __Bit 2__ | __Bit 1__ | __Bit 0__ | __Description__                                             |
-|:---------:|:---------:|:---------:|:-----------------------------------------------------------:|
-| 0         | 0         | 0         | Stop counter                                                |
-| 0         | 0         | 1         | No prescaler (so counts at 16Mhz)                           |
-| 0         | 1         | 0         | Clock / 8                                                   |
-| 0         | 1         | 1         | Clock / 64                                                  |
-| 1         | 0         | 0         | Clock / 256                                                 |
-| 1         | 0         | 1         | Clock / 1024                                                |
-| 1         | 1         | 0         | Count using pin 5 as input, every time it goes from 1 to 0? | 
-| 1         | 1         | 1         | Count using pin 5 as input, every time it goes from 0 to 1? |
-
-<br>
+\includegraphics{images/0004-timerspeedtable.png}
 
 We can show how using (or not using) a prescaler can speed up or slow down timer1:
 
@@ -101,14 +90,14 @@ void setup() {
 &nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
 &nbsp;&nbsp;
 &nbsp;&nbsp;// Setting waveform generation mode 0
-&nbsp;&nbsp;*(uint8\_t *)0x80 &= 0b11111100;
-&nbsp;&nbsp;*(uint8\_t *)0x81 &= 0b11100111;
+&nbsp;&nbsp;*(uint8_t *)0x80 &= 0b11111100;
+&nbsp;&nbsp;*(uint8_t *)0x81 &= 0b11100111;
 &nbsp;&nbsp;// Setting no prescaler
-&nbsp;&nbsp;*(uint8\_t *)0x81 &= 0b11111001;
-&nbsp;&nbsp;*(uint8\_t *)0x81 |= 0b00000001;
+&nbsp;&nbsp;*(uint8_t *)0x81 &= 0b11111001;
+&nbsp;&nbsp;*(uint8_t *)0x81 |= 0b00000001;
 &nbsp;&nbsp;// Setting / 1024 prescaler
-&nbsp;&nbsp;//*(uint8\_t *)0x81 &= 0b11111101;
-&nbsp;&nbsp;//*(uint8\_t *)0x81 |= 0b00000101;
+&nbsp;&nbsp;//*(uint8_t *)0x81 &= 0b11111101;
+&nbsp;&nbsp;//*(uint8_t *)0x81 |= 0b00000101;
 }
 
 void loop() {
@@ -118,7 +107,7 @@ void loop() {
 
 You can uncomment or comment the no prescaler and 1024 prescaler settings and watch how it speeds up or slows down the counter. You'll find that with no prescaler it should overflow 16,000,000 / 65536 = 244 times a second, which is too fast for Serial.println to keep up. It won't appear to count sequentially as the counter is counting more than 65535 times in the time it takes to print to Serial Monitor. With 1024 prescaler, Serial.println will be able to keep up and more clearly show the timer1's count registers counting up to 65535 before overflowing.
 
-![two prescaler examples](images/0004-twoprescalerexamples.png)
+\includegraphics{images/0004-twoprescalerexamples.png}
 
 <br>
 
@@ -132,11 +121,11 @@ But there is a solution: to introduce another variable to count the counter. Thi
 void setup() {
 &nbsp;&nbsp;pinMode(13, OUTPUT);
 &nbsp;&nbsp;// Setting waveform generation mode 0
-&nbsp;&nbsp;*(uint8\_t *)0x80 &= 0b11111100;
-&nbsp;&nbsp;*(uint8\_t *)0x81 &= 0b11100111;
+&nbsp;&nbsp;*(uint8_t *)0x80 &= 0b11111100;
+&nbsp;&nbsp;*(uint8_t *)0x81 &= 0b11100111;
 &nbsp;&nbsp;// Setting / 1024 prescaler
-&nbsp;&nbsp;*(uint8\_t *)0x81 &= 0b11111101;
-&nbsp;&nbsp;*(uint8\_t *)0x81 |= 0b00000101;
+&nbsp;&nbsp;*(uint8_t *)0x81 &= 0b11111101;
+&nbsp;&nbsp;*(uint8_t *)0x81 |= 0b00000101;
 }
 
 int count = 0;
@@ -144,7 +133,7 @@ int count = 0;
 void loop() {
 &nbsp;&nbsp;if(*(uint16_t *)0x84 > 16000) {
 &nbsp;&nbsp;&nbsp;&nbsp;count++;
-&nbsp;&nbsp;&nbsp;&nbsp;*(uint16\_t *)0x84 = 0;
+&nbsp;&nbsp;&nbsp;&nbsp;*(uint16_t *)0x84 = 0;
 &nbsp;&nbsp;&nbsp;&nbsp;if(count >= 10) {
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;digitalWrite(13, !digitalRead(13));
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count = 0;

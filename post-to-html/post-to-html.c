@@ -80,7 +80,7 @@ char *getTextToEnd(char *str, char *type, char **text) {
             char *strPtrBefore = strPtr; // Mark spot where text may end
             strPtr++;
             printf("char: %c\n", *strPtr);
-            if(*strPtr == '_' || *strPtr == '\\' || *strPtr == '*') { continue; } // For escape underscores
+            if(*strPtr == '_' || *strPtr == '\\') { continue; } // For escape underscores
             char *cmd; 
             strPtr = str_copyCmd(strPtr, &cmd);
             printf("cmdHere: %s\n", cmd);
@@ -124,12 +124,22 @@ char *convertToHtml(char *str) {
                 strCur++;
                 strCur = getStrArg(strCur, linkText);
                 strCur++;
-                printf("link: %s, text: %s\n", link, linkText);
+                printf("href-link: %s, text: %s\n", link, linkText);
                 result = str_concat(result, "<a href=\"");
                 result = str_concat(result, link);
                 result = str_concat(result, "\">");
                 result = str_concat(result, linkText);
                 result = str_concat(result, "</a>");
+
+                strPtr = strCur;
+            } else if(str_equal(cmd, "includegraphics")) {
+                char link[2048];
+                strCur = getStrArg(strCur, link);
+                strCur++;
+                printf("img-link: %s\n", link);
+                result = str_concat(result, "<img src=\"");
+                result = str_concat(result, link);
+                result = str_concat(result, "\"><br><br>");
 
                 strPtr = strCur;
             } else if(str_equal(cmd, "section")) {
@@ -263,7 +273,41 @@ char *get_title(char *str) {
                 return str_copy(title);
             }
         }
+        str++;
         //TODO: If \series, add it?
+    }
+    return -1;
+}
+
+char *get_date(char *str) {
+    char dateYear[128];
+    char dateMonth[128];
+    char dateDay[128];
+    while(*str != '\0') {
+        if(*str == '\\') {
+            str++;
+            char *cmd;
+            str = str_copyCmd(str, &cmd);
+            printf("cmd: %s\n", cmd);
+            if(str_equal(cmd, "date")) {
+                str = getStrArg(str, dateYear);
+                printf("dateYear: %s\n", dateYear);
+                str++;
+                str = getStrArg(str, dateMonth);
+                str++;
+                str = getStrArg(str, dateDay);
+                printf("date: %s-%s-%s\n", dateYear, dateMonth, dateDay);
+                free(cmd);
+
+                char *date = str_copy(dateYear);
+                date = str_concat(date, "-");
+                date = str_concat(date, dateMonth);
+                date = str_concat(date, "-");
+                date = str_concat(date, dateDay);
+                return date;
+            }
+        }
+        str++;
     }
     return -1;
 }
