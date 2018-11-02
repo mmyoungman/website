@@ -937,5 +937,21 @@ char *date_month(int monthNum) {
     }
 }
 
+char *date_nice(int year, int month, int day) {
+    char *res = str_inttostr(day);
+    char *suffix = date_suffix(day % 10);
+    res = str_concat(res, suffix);
+    free(suffix);
+    res = str_concat(res, " ");
+    char *monthStr = date_month(month);
+    res = str_concat(res, monthStr);
+    free(monthStr);
+    res = str_concat(res, " ");
+    char *yearStr = str_inttostr(year);
+    res = str_concat(res, yearStr);
+    free(yearStr);
+    return res;
+}
+
 // 008. END
 #endif

@@ -18,39 +18,41 @@ char *str_copyToPtr(char *start, char *end) {
     return res;
 }
 
-char *process_cmd(char *str, int *resLen) {
+char **process_cmd(char **str) {
     char **res = 0;
     char *cmd = 0;
-    char *arg = 0;
-    int size = 0;
 
-    char *ptr = str;
+    assert(**str == '\\');
+    (*str)++;
+    char *ptr = *str;
     while(*ptr != '{' && *ptr != ' ' && *ptr != '\0') {
         arr_push(cmd, *ptr);
         ptr++;
     }
-    arr_push(*res, cmd);
+    arr_push(cmd, '\0');
+    dbg("cmd: %s", cmd);
+    arr_push(res, cmd);
 
     while(*ptr == '{') {
-        size++;
+        char *arg = 0;
         ptr++;
         while(*ptr != '}') {
             arr_push(arg, *ptr); 
             ptr++;
         }
-        arr_push(*res, arg);
-        free(arg);
-        arg = 0;
+        arr_push(arg, '\0');
+        assert(*ptr == '}');
+        arr_push(res, arg);
+        dbg("arg: %s", arg);
         ptr++;
     }
-
-    *resLen = size;
+    *str = ptr;
     return res;
 }
 
 char *str_copyCmd(char *str, char **cmd) {
     char *ptr = str;
-    while(*ptr != '{') { //|| *ptr != ' ') { //TODO: THIS REVEALS A BUG
+    while(*ptr != '{' && *ptr != ' ') {
         ptr++;
     }
     int len = ptr - str;
@@ -244,43 +246,34 @@ Post createPost(char* str) {
     Post post;
     while(*str != '\0') {
         if(*str == '\\') {
-            str++;
-            if(*str == '_') {
-                continue;
-            }
-            char *cmd;
-            str = str_copyCmd(str, &cmd);
-            dbg("cmd: %s\n", cmd);
-            if(str_equal(cmd, "title")) {
-                str = getStrArg(str, post.title);
-                dbg("post.title: %s\n", post.title);
-                free(cmd);
-            } else if(str_equal(cmd, "author")) {
-                str = getStrArg(str, post.author);
-                dbg("post.author: %s\n", post.author);
-                free(cmd);
-            } else if(str_equal(cmd, "date")) {
-                str = getIntArg(str, &post.dateYear);
-                dbg("post.dateYear: %d\n", post.dateYear);
-                str = getIntArg(str, &post.dateMonth);
-                dbg("post.dateMonth: %d\n", post.dateMonth);
-                str = getIntArg(str, &post.dateDay);
-                dbg("post.dateDay: %d\n", post.dateDay);
-            } else if(str_equal(cmd, "begin")) {
-                char beginType[128];
-                str = getStrArg(str, beginType);
-                dbg("beginType: %s\n", beginType);
-                str++;
-                if(str_equal(beginType, "blurb")) {
+            char **arr = process_cmd(&str);
+            dbg("arr[0]: %s", arr[0]);
+            if(str_beginswith(arr[0], "_")) {
+                continue; 
+            } else if(str_equal(arr[0], "title")) {
+                assert(arr_len(arr) == 2);
+                xmemcpy(post.title, arr[1], str_len(arr[1])+1); 
+            } else if(str_equal(arr[0], "author")) {
+                assert(arr_len(arr) == 2);
+                xmemcpy(post.author, arr[1], str_len(arr[1])+1);
+            } else if(str_equal(arr[0], "date")) {
+                assert(arr_len(arr) == 4);
+                post.dateYear = str_toint(arr[1]);
+                post.dateMonth = str_toint(arr[2]);
+                post.dateDay = str_toint(arr[3]);
+            } else if(str_equal(arr[0], "begin")) {
+                assert(arr_len(arr) == 2);
+                if(str_equal(arr[1], "blurb")) {
                     str = getTextToEnd(str, "blurb", &post.blurb);
-                    //dbg("post.blurb: %s\n", post.blurb);
-                } else if(str_equal(beginType, "document")) {
+                    int i = 0;
+                } else if(str_equal(arr[1], "document")) {
                     str = getTextToEnd(str, "document", &post.body);
-                    //dbg("post.body: %s\n", post.body);
+                    int i = 0;
                 }
             }
+        } else {
+            str++;
         }
-        str++;
     }
     return post;
 }
@@ -312,36 +305,14 @@ char *get_date(char *str) {
     char dateDay[128];
     while(*str != '\0') {
         if(*str == '\\') {
-            str++;
-            char *cmd;
-            str = str_copyCmd(str, &cmd);
-            dbg("cmd: %s\n", cmd);
-            if(str_equal(cmd, "date")) {
-                str = getStrArg(str, dateYear);
-                dbg("dateYear: %s\n", dateYear);
-                str++;
-                str = getStrArg(str, dateMonth);
-                str++;
-                str = getStrArg(str, dateDay);
-                dbg("date: %s-%s-%s\n", dateYear, dateMonth, dateDay);
-                free(cmd);
-
-                char *date = str_copy(dateDay);
-                int i = 0;
-                while(dateDay[i] != '\0') i++;
-                i--;
-                char *suffix = date_suffix(str_toint(dateDay) % 10);
-                date = str_concat(date, suffix);
-                free(suffix);
-                date = str_concat(date, " ");
-                date = str_concat(date, date_month(str_toint(dateMonth)));
-                date = str_concat(date, " ");
-                date = str_concat(date, dateYear);
-                dbg("The date is %s\n", date);
-                return date;
+            char **arr = process_cmd(&str);
+            if(str_equal(arr[0], "date")) {
+                assert(arr_len(arr) == 4);
+                return date_nice(str_toint(arr[1]), str_toint(arr[2]), str_toint(arr[3]));;
             }
+        } else {
+            str++;
         }
-        str++;
     }
     assert(0);
 }
@@ -358,14 +329,9 @@ char *convert_body(char* str) {
     if(!str_equal(post.title, "About")) {
         html = str_concat(html, "<h2>");
 
-        html = str_concat(html, str_inttostr(post.dateDay));
-        char *suffix = date_suffix(post.dateDay % 10);
-        html = str_concat(html, suffix);
-        free(suffix);
-        html = str_concat(html, " ");
-        html = str_concat(html, date_month(post.dateMonth));
-        html = str_concat(html, " ");
-        html = str_concat(html, str_inttostr(post.dateYear));
+        char *date = date_nice(post.dateYear, post.dateMonth, post.dateDay);
+        html = str_concat(html, date);
+        free(date);
 
         html = str_concat(html, "</h2>\n");
     }
@@ -374,7 +340,8 @@ char *convert_body(char* str) {
 }
 
 int main() {
-    FILE* fp = fopen("../content/0005-behind-the-libraries-inquiring-into-interrupts.post", "r");
+    //FILE* fp = fopen("../content/0005-behind-the-libraries-inquiring-into-interrupts.post", "r");
+    FILE* fp = fopen("../content/0003-behind-the-libraries-plunge-into-pinmode.post", "r");
 
     fseek(fp, 0, SEEK_END);
     long fsize = ftell(fp);
@@ -384,5 +351,11 @@ int main() {
     fread(buffer, fsize, 1, fp);
     fclose(fp);
 
-    dbg("%s\n", convert_body(buffer));
+    //dbg("%s", get_date(buffer));
+    //dbg("%s\n", convert_body(buffer));
+    char *body = convert_body(buffer);
+    for(int i = 0; i < 15224; i++) {
+        printf("%c", *body);
+        body++;
+    }
 }
