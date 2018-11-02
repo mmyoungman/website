@@ -1,22 +1,51 @@
 #include "lib-mmy.h"
 
-char *helloworld(char *name) {
-    char *result = str_copy("Hello ");
-    str_concat(result, name);
-    str_concat(result, "!");
-    return result;
-}
-
-void print_bytes(char* str) {
-    printf("%s\n\n", str);
-}
-
 char *str_match(char *ptr, char *match) {
     int matchLen = str_len(match);
     for(int i = 0; i < matchLen; i++) {
         if(ptr[i] != match[i]) { return 0; }
     }
     return ptr + matchLen;
+}
+
+char *str_copyToPtr(char *start, char *end) {
+    char *res = 0;
+    assert(start < end);
+    while(start != end) {
+        arr_push(res, *start);
+        start++;
+    }
+    return res;
+}
+
+char *process_cmd(char *str, int *resLen) {
+    char **res = 0;
+    char *cmd = 0;
+    char *arg = 0;
+    int size = 0;
+
+    char *ptr = str;
+    while(*ptr != '{' && *ptr != ' ' && *ptr != '\0') {
+        arr_push(cmd, *ptr);
+        ptr++;
+    }
+    arr_push(*res, cmd);
+
+    while(*ptr == '{') {
+        size++;
+        ptr++;
+        while(*ptr != '}') {
+            arr_push(arg, *ptr); 
+            ptr++;
+        }
+        arr_push(*res, arg);
+        free(arg);
+        arg = 0;
+        ptr++;
+    }
+
+    *resLen = size;
+    return res;
 }
 
 char *str_copyCmd(char *str, char **cmd) {
@@ -36,13 +65,13 @@ char *str_copyCmd(char *str, char **cmd) {
 }
 
 char *getStrArg(char *str, char *arg) {
-    if(*str != '{') { return -1; }
+    if(*str != '{') { log_err("Cmd should be followed by '{'!"); assert(0); }
     str++;
     int len = 0;
     for(int i = 0; i < 128; i++) {
         if(str[i] == '}') { len = i; break; }
-        if(str[i] == '\0') { return -1; }
-        if(i == 127) { return -1; }
+        if(str[i] == '\0') { log_err("str shouldn't end before cmd arg ends"); assert(0); }
+        if(i == 127) { log_err("arg shouldn't be longer than 128 chars"); assert(0); }
     }
     
     for(int i = 0; i < len; i++) {
@@ -54,13 +83,13 @@ char *getStrArg(char *str, char *arg) {
 }
 
 char *getIntArg(char *str, int *arg) {
-    if(*str != '{') { return -1; }
+    if(*str != '{') { assert(0); }
     str++;
     int len = 0;
     for(int i = 0; i < 6; i++) {
         if(str[i] == '}') { len = i; break; }
-        if(str[i] == '\0') { return -1; }
-        if(i == 5) { return -1; }
+        if(str[i] == '\0') { assert(0); }
+        if(i == 5) { assert(0); }
     }
     
     char strArg[6];
@@ -69,7 +98,7 @@ char *getIntArg(char *str, int *arg) {
         str++;
     }
     strArg[len] = '\0';
-    *arg = str_toint(&strArg);
+    *arg = str_toint(strArg);
     return ++str;
 }
 
@@ -79,15 +108,13 @@ char *getTextToEnd(char *str, char *type, char **text) {
         if(*strPtr == '\\') {
             char *strPtrBefore = strPtr; // Mark spot where text may end
             strPtr++;
-            printf("char: %c\n", *strPtr);
             if(*strPtr == '_' || *strPtr == '\\') { continue; } // For escape underscores
             char *cmd; 
             strPtr = str_copyCmd(strPtr, &cmd);
-            printf("cmdHere: %s\n", cmd);
+            dbg("cmdHere: %s\n", cmd);
             if(str_equal(cmd, "end")) {
-                printf("But do we get here?\n");
                 char arg[128];
-                strPtr = getStrArg(strPtr, &arg);
+                strPtr = getStrArg(strPtr, arg);
                 if(str_equal(arg, type)) {
                     *strPtrBefore = '\0';
                     *text = str_copy(str);
@@ -98,7 +125,7 @@ char *getTextToEnd(char *str, char *type, char **text) {
         }
         strPtr++;
     }
-    return -1;
+    assert(0);
 }
 
 char *convertToHtml(char *str) {
@@ -116,7 +143,7 @@ char *convertToHtml(char *str) {
             char *cmd;
             if(*strCur == '_' || *strCur == '\\' || *strCur == '*') { continue; } // Escape underscore
             strCur = str_copyCmd(strCur, &cmd);
-            printf("cmd: %s\n", cmd);
+            dbg("cmd: %s\n", cmd);
             if(str_equal(cmd, "href")) {
                 char link[2048];
                 char linkText[1024];
@@ -124,7 +151,7 @@ char *convertToHtml(char *str) {
                 strCur++;
                 strCur = getStrArg(strCur, linkText);
                 strCur++;
-                printf("href-link: %s, text: %s\n", link, linkText);
+                dbg("href-link: %s, text: %s\n", link, linkText);
                 result = str_concat(result, "<a href=\"");
                 result = str_concat(result, link);
                 result = str_concat(result, "\">");
@@ -136,7 +163,7 @@ char *convertToHtml(char *str) {
                 char link[2048];
                 strCur = getStrArg(strCur, link);
                 strCur++;
-                printf("img-link: %s\n", link);
+                dbg("img-link: %s\n", link);
                 result = str_concat(result, "<img src=\"");
                 result = str_concat(result, link);
                 result = str_concat(result, "\"><br><br>");
@@ -146,7 +173,7 @@ char *convertToHtml(char *str) {
                 char sectionTitle[1024];
                 strCur = getStrArg(strCur, sectionTitle);
                 strCur++;
-                printf("sectionTitle: %s\n", sectionTitle);
+                dbg("sectionTitle: %s\n", sectionTitle);
                 result = str_concat(result, "<br>\n<h3>");
                 result = str_concat(result, sectionTitle);
                 result = str_concat(result, "</h3>\n");
@@ -157,7 +184,7 @@ char *convertToHtml(char *str) {
                 strCur = getStrArg(strCur, beginType);
                 strCur++;
                 str_equal(beginType, "blockquote");
-                printf("insideBeginType: %s\n", beginType);
+                dbg("insideBeginType: %s\n", beginType);
                 if(str_equal(beginType, "blockquote")) {
                     result = str_concat(result, "<blockquote>\n");
                     char *quoteText;
@@ -223,33 +250,33 @@ Post createPost(char* str) {
             }
             char *cmd;
             str = str_copyCmd(str, &cmd);
-            printf("cmd: %s\n", cmd);
+            dbg("cmd: %s\n", cmd);
             if(str_equal(cmd, "title")) {
-                str = getStrArg(str, &post.title);
-                printf("post.title: %s\n", post.title);
+                str = getStrArg(str, post.title);
+                dbg("post.title: %s\n", post.title);
                 free(cmd);
             } else if(str_equal(cmd, "author")) {
-                str = getStrArg(str, &post.author);
-                printf("post.author: %s\n", post.author);
+                str = getStrArg(str, post.author);
+                dbg("post.author: %s\n", post.author);
                 free(cmd);
             } else if(str_equal(cmd, "date")) {
                 str = getIntArg(str, &post.dateYear);
-                printf("post.dateYear: %d\n", post.dateYear);
+                dbg("post.dateYear: %d\n", post.dateYear);
                 str = getIntArg(str, &post.dateMonth);
-                printf("post.dateMonth: %d\n", post.dateMonth);
+                dbg("post.dateMonth: %d\n", post.dateMonth);
                 str = getIntArg(str, &post.dateDay);
-                printf("post.dateDay: %d\n", post.dateDay);
+                dbg("post.dateDay: %d\n", post.dateDay);
             } else if(str_equal(cmd, "begin")) {
                 char beginType[128];
                 str = getStrArg(str, beginType);
-                printf("beginType: %s\n", beginType);
+                dbg("beginType: %s\n", beginType);
                 str++;
                 if(str_equal(beginType, "blurb")) {
                     str = getTextToEnd(str, "blurb", &post.blurb);
-                    printf("post.blurb: %s\n", post.blurb);
+                    //dbg("post.blurb: %s\n", post.blurb);
                 } else if(str_equal(beginType, "document")) {
                     str = getTextToEnd(str, "document", &post.body);
-                    printf("post.body: %s\n", post.body);
+                    //dbg("post.body: %s\n", post.body);
                 }
             }
         }
@@ -265,10 +292,10 @@ char *get_title(char *str) {
             str++;
             char *cmd;
             str = str_copyCmd(str, &cmd);
-            printf("cmd: %s\n", cmd);
+            dbg("cmd: %s\n", cmd);
             if(str_equal(cmd, "title")) {
-                str = getStrArg(str, &title);
-                printf("title: %s\n", title);
+                str = getStrArg(str, title);
+                dbg("title: %s\n", title);
                 free(cmd);
                 return str_copy(title);
             }
@@ -276,7 +303,7 @@ char *get_title(char *str) {
         str++;
         //TODO: If \series, add it?
     }
-    return -1;
+    assert(0);
 }
 
 char *get_date(char *str) {
@@ -288,28 +315,35 @@ char *get_date(char *str) {
             str++;
             char *cmd;
             str = str_copyCmd(str, &cmd);
-            printf("cmd: %s\n", cmd);
+            dbg("cmd: %s\n", cmd);
             if(str_equal(cmd, "date")) {
                 str = getStrArg(str, dateYear);
-                printf("dateYear: %s\n", dateYear);
+                dbg("dateYear: %s\n", dateYear);
                 str++;
                 str = getStrArg(str, dateMonth);
                 str++;
                 str = getStrArg(str, dateDay);
-                printf("date: %s-%s-%s\n", dateYear, dateMonth, dateDay);
+                dbg("date: %s-%s-%s\n", dateYear, dateMonth, dateDay);
                 free(cmd);
 
-                char *date = str_copy(dateYear);
-                date = str_concat(date, "-");
-                date = str_concat(date, dateMonth);
-                date = str_concat(date, "-");
-                date = str_concat(date, dateDay);
+                char *date = str_copy(dateDay);
+                int i = 0;
+                while(dateDay[i] != '\0') i++;
+                i--;
+                char *suffix = date_suffix(str_toint(dateDay) % 10);
+                date = str_concat(date, suffix);
+                free(suffix);
+                date = str_concat(date, " ");
+                date = str_concat(date, date_month(str_toint(dateMonth)));
+                date = str_concat(date, " ");
+                date = str_concat(date, dateYear);
+                dbg("The date is %s\n", date);
                 return date;
             }
         }
         str++;
     }
-    return -1;
+    assert(0);
 }
 
 char *convert_body(char* str) {
@@ -323,11 +357,16 @@ char *convert_body(char* str) {
 
     if(!str_equal(post.title, "About")) {
         html = str_concat(html, "<h2>");
-        html = str_concat(html, str_inttostr(post.dateYear));
-        html = str_concat(html, "-");
-        html = str_concat(html, str_inttostr(post.dateMonth));
-        html = str_concat(html, "-");
+
         html = str_concat(html, str_inttostr(post.dateDay));
+        char *suffix = date_suffix(post.dateDay % 10);
+        html = str_concat(html, suffix);
+        free(suffix);
+        html = str_concat(html, " ");
+        html = str_concat(html, date_month(post.dateMonth));
+        html = str_concat(html, " ");
+        html = str_concat(html, str_inttostr(post.dateYear));
+
         html = str_concat(html, "</h2>\n");
     }
     html = str_concat(html, post.body);
@@ -345,6 +384,5 @@ int main() {
     fread(buffer, fsize, 1, fp);
     fclose(fp);
 
-    //printf("%s\n", buffer);
-    printf("%s\n", convert_body(buffer));
+    dbg("%s\n", convert_body(buffer));
 }

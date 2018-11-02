@@ -25,7 +25,7 @@ To write it in C, I needed it to play nice with my generate_website.py script. T
 
 + Creating a Python C extension.
 
-+ Using ctypes to interface with a C executable.
++ Using ctypes to interface with a C dynamic library.
 
 I didn't want to compile the entire Python runtime each time I pushed a change, so I started by looking at an extension.
 
