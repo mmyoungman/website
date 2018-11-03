@@ -15,6 +15,7 @@ char *str_copyToPtr(char *start, char *end) {
         arr_push(res, *start);
         start++;
     }
+    arr_push(res, '\0');
     return res;
 }
 
@@ -25,6 +26,15 @@ char **process_cmd(char **str) {
     assert(**str == '\\');
     (*str)++;
     char *ptr = *str;
+
+    // underscore works, backslash no
+    if(*ptr == '_' || *ptr == '\\') { // escaped chars
+        arr_push(cmd, '_');
+        arr_push(res, cmd);
+        (*str)++;
+        return res;
+    }
+
     while(*ptr != '{' && *ptr != ' ' && *ptr != '\0') {
         arr_push(cmd, *ptr);
         ptr++;
@@ -46,8 +56,6 @@ char **process_cmd(char **str) {
         dbg("arg: %s", arg);
         ptr++;
     }
-    arr_free(cmd);
-    arr_free(arg);
     *str = ptr;
     return res;
 }
@@ -75,7 +83,7 @@ char *getStrArg(char *str, char *arg) {
     for(int i = 0; i < 128; i++) {
         if(str[i] == '}') { len = i; break; }
         if(str[i] == '\0') { log_err("str shouldn't end before cmd arg ends"); assert(0); }
-        if(i == 127) { log_err("arg shouldn't be longer than 128 chars"); assert(0); }
+        if(i == 127) { log_err("arg cannot be longer than 128 chars"); assert(0); }
     }
     
     for(int i = 0; i < len; i++) {
@@ -110,24 +118,23 @@ char *getTextToEnd(char *str, char *type, char **text) {
     char *strPtr = str; 
     while(*strPtr != '\0') {
         if(*strPtr == '\\') {
-            char *strPtrBefore = strPtr; // Mark spot where text may end
-            strPtr++;
-            if(*strPtr == '_' || *strPtr == '\\') { continue; } // For escape underscores
-            char *cmd; 
-            strPtr = str_copyCmd(strPtr, &cmd);
-            dbg("cmdHere: %s\n", cmd);
-            if(str_equal(cmd, "end")) {
-                char arg[128];
-                strPtr = getStrArg(strPtr, arg);
-                if(str_equal(arg, type)) {
-                    *strPtrBefore = '\0';
-                    *text = str_copy(str);
+            char *endCmdStart = strPtr;
+            char **arr = process_cmd(&strPtr);
+            if(str_beginswith(arr[0], "_")) {
+                continue;
+            }
+            // TODO: Handle double backslash
+            if(str_equal(arr[0], "end")) {
+                assert(arr_len(arr) == 2);
+                if(str_equal(arr[1], type)) {
+                    *text = str_copyToPtr(str, endCmdStart);
+                    arr_free(arr);
                     return strPtr;
                 }
-            }
-            free(cmd);
+            } 
+        } else {
+            strPtr++;
         }
-        strPtr++;
     }
     assert(0);
 }
@@ -145,7 +152,7 @@ char *convertToHtml(char *str) {
             strPtr = strCur;
 
             char *cmd;
-            if(*strCur == '_' || *strCur == '\\' || *strCur == '*') { continue; } // Escape underscore
+            if(*strCur == '_' || *strCur == '\\') { continue; } // Escape underscore
             strCur = str_copyCmd(strCur, &cmd);
             dbg("cmd: %s\n", cmd);
             if(str_equal(cmd, "href")) {
@@ -216,12 +223,18 @@ char *convertToHtml(char *str) {
             *strCur = '\0'; // Needed to copy text we've just gone over
             strCur++;
             result = str_concat(result, strPtr);
+
+            //char *prevText = str_copyToPtr(strPtr, strCur);
+            //result = str_concat(result, prevText);
+
             strPtr = strCur;
 
             if(*strCur == '\n') { // Two newlines in a row
                 result = str_concat(result, "</p>\n<p>");
 
                 strPtr = strCur;
+            } else {
+                continue;
             }
         }
         strCur++;
@@ -267,16 +280,15 @@ Post createPost(char* str) {
                 assert(arr_len(arr) == 2);
                 if(str_equal(arr[1], "blurb")) {
                     str = getTextToEnd(str, "blurb", &post.blurb);
-                    int i = 0;
                 } else if(str_equal(arr[1], "document")) {
                     str = getTextToEnd(str, "document", &post.body);
-                    int i = 0;
                 }
             }
         } else {
             str++;
         }
     }
+    dbg("post.body:\n %s \n post.body end", post.body);
     return post;
 }
 
@@ -341,6 +353,7 @@ char *convert_body(char* str) {
     return html;
 }
 
+// For debugging
 int main() {
     //FILE* fp = fopen("../content/0005-behind-the-libraries-inquiring-into-interrupts.post", "r");
     FILE* fp = fopen("../content/0003-behind-the-libraries-plunge-into-pinmode.post", "r");
@@ -354,10 +367,11 @@ int main() {
     fclose(fp);
 
     //dbg("%s", get_date(buffer));
-    //dbg("%s\n", convert_body(buffer));
-    char *body = convert_body(buffer);
-    for(int i = 0; i < 15224; i++) {
-        printf("%c", *body);
-        body++;
-    }
+    dbg("%s\n", convert_body(buffer));
+
+    //char *body = convert_body(buffer);
+    //for(int i = 0; i < 43164; i++) {
+    //    printf("%c", *body);
+    //    body++;
+    //}
 }

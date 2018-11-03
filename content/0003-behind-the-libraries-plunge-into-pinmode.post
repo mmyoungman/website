@@ -54,7 +54,6 @@ void loop() {
 }
 \end{blockquote}
 
-
 \section{Switching Modes and the Pull-Up Disable Bit}
 
 According to the datasheet (p99), there is a potential problem that can occur when switching modes from INPUT (so the PORT bit and DDRB bits are 0b00) to OUTPUT HIGH (0b11) or from OUTPUT LOW (0b10) to INPUT PULLUP (0b01), which is that you cannot change between these states instanteously as you must flip two bits, requiring two separate instructions. So after issuing the first instruction, you would temporarily be in a mode you don't want to be in, which in rare cases can cause problems.
@@ -62,7 +61,6 @@ According to the datasheet (p99), there is a potential problem that can occur wh
 I bring this up not because it is something that should concern us, but because the solution offered to this problem is the pull-up disable bit (PUD). This is worth mentioning because the PUD bit can overrule the changes you've made to the DDR and PORT registers. The PUD bit is off by default, but if you turn it on, even if all pins are set to be input pullup, they become input pins. This bit allows you to jump straight from OUTPUT HIGH to INPUT. The PUD bit is the 4th bit in the microcontroller control register (MCUCR) at address 0x55.
 
 \includegraphics{images/0003-pudbitpinmodes.png}
-
 
 \section{Reading from Pins}
 
