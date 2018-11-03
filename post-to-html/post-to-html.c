@@ -10,7 +10,7 @@ char *str_match(char *ptr, char *match) {
 
 char *str_copyToPtr(char *start, char *end) {
     char *res = 0;
-    assert(start < end);
+    //assert(start < end); // Avoid doing this? UB?
     while(start != end) {
         arr_push(res, *start);
         start++;
@@ -27,9 +27,9 @@ char **process_cmd(char **str) {
     (*str)++;
     char *ptr = *str;
 
-    // underscore works, backslash no
+    // TODO: This is broke
     if(*ptr == '_' || *ptr == '\\') { // escaped chars
-        arr_push(cmd, '_');
+        arr_push(cmd, *ptr);
         arr_push(res, cmd);
         (*str)++;
         return res;
@@ -136,6 +136,7 @@ char *getTextToEnd(char *str, char *type, char **text) {
             strPtr++;
         }
     }
+    log_err("\\end{%s} not found after \\begin{%s}!", type, type);
     assert(0);
 }
 
@@ -146,57 +147,42 @@ char *convertToHtml(char *str) {
 
     while(*strCur != '\0') {
         if(*strCur == '\\') {
-            *strCur = '\0'; // Needed to copy text we've just gone over
-            strCur++;
-            result = str_concat(result, strPtr);
-            strPtr = strCur;
+            char *prevText = str_copyToPtr(strPtr, strCur);
+            result = str_concat(result, prevText);
+            char **arr = process_cmd(&strCur);
 
-            char *cmd;
-            if(*strCur == '_' || *strCur == '\\') { continue; } // Escape underscore
-            strCur = str_copyCmd(strCur, &cmd);
-            dbg("cmd: %s\n", cmd);
-            if(str_equal(cmd, "href")) {
+            if(str_equal(arr[0], "href")) {
+                assert(arr_len(arr) == 3);
                 char link[2048];
                 char linkText[1024];
-                strCur = getStrArg(strCur, link);
-                strCur++;
-                strCur = getStrArg(strCur, linkText);
-                strCur++;
-                dbg("href-link: %s, text: %s\n", link, linkText);
+                dbg("href-link: %s, text: %s\n", arr[1], arr[2]);
                 result = str_concat(result, "<a href=\"");
-                result = str_concat(result, link);
+                result = str_concat(result, arr[1]);
                 result = str_concat(result, "\">");
-                result = str_concat(result, linkText);
+                result = str_concat(result, arr[2]);
                 result = str_concat(result, "</a>");
-
                 strPtr = strCur;
-            } else if(str_equal(cmd, "includegraphics")) {
+            } else if(str_equal(arr[0], "includegraphics")) {
+                assert(arr_len(arr) == 2);
                 char link[2048];
-                strCur = getStrArg(strCur, link);
-                strCur++;
-                dbg("img-link: %s\n", link);
+                dbg("img-link: %s\n", arr[1]);
                 result = str_concat(result, "<img src=\"");
-                result = str_concat(result, link);
+                result = str_concat(result, arr[1]);
                 result = str_concat(result, "\"><br><br>");
-
                 strPtr = strCur;
-            } else if(str_equal(cmd, "section")) {
+            } else if(str_equal(arr[0], "section")) {
+                assert(arr_len(arr) == 2);
                 char sectionTitle[1024];
-                strCur = getStrArg(strCur, sectionTitle);
-                strCur++;
-                dbg("sectionTitle: %s\n", sectionTitle);
+                dbg("sectionTitle: %s\n", arr[1]);
                 result = str_concat(result, "<br>\n<h3>");
-                result = str_concat(result, sectionTitle);
+                result = str_concat(result, arr[1]);
                 result = str_concat(result, "</h3>\n");
 
                 strPtr = strCur;
-            } else if(str_equal(cmd, "begin")) {
-                char beginType[1280];
-                strCur = getStrArg(strCur, beginType);
-                strCur++;
-                str_equal(beginType, "blockquote");
-                dbg("insideBeginType: %s\n", beginType);
-                if(str_equal(beginType, "blockquote")) {
+            } else if(str_equal(arr[0], "begin")) {
+                assert(arr_len(arr) == 2);
+                dbg("beginType: %s\n", arr[1]);
+                if(str_equal(arr[1], "blockquote")) {
                     result = str_concat(result, "<blockquote>\n");
                     char *quoteText;
                     strCur = getTextToEnd(strCur, "blockquote", &quoteText);
@@ -215,7 +201,7 @@ char *convertToHtml(char *str) {
 
                     strCur++;
                     strPtr = strCur;
-                } else if(str_equal(beginType, "itemize")) {
+                } else if(str_equal(arr[1], "itemize")) {
                     // TODO
                 }
             }
