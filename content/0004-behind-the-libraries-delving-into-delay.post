@@ -11,7 +11,6 @@
 \end{blurb}
 
 \begin{document}
-
 So far in this series, we've been methodically producing workarounds for library functions, sidestepping digitalWrite and digitalRead and pinMode. But as we've done this we've been using the delay function. The reason I've ignored this is because implementing delay is much more complicated.
 
 But now that we understand the basics of how to interact with the hardware of the Arduino Uno -- how to read and write to registers -- we can start to explore some of its more complicated features.
@@ -19,7 +18,6 @@ But now that we understand the basics of how to interact with the hardware of th
 The delay function depends on two different features of the ATmega328p: timers and interrupts. We'll be exploring one at a time, starting with timers, as we work towards our own alternative version of delay.
 
 \section{What are timers?}
-
 The simplest timer counts from zero to the max value it can hold and then overflow to zero. So a 2-bit timer, for example, would count 00, 01, 10, 11, then overflow back to 00.
 
 On the Arduino, the timers on the ATmega328p chip count up in line with a crystal oscillator. You can see this on the Arduino with the number "16.000" etched on it. This indicates that it pulses at 16Mhz, or 16,000,000 times a second.
@@ -70,10 +68,7 @@ You should now see in the Arduino IDE's Serial Monitor (if you disable autoscrol
 
 You'll also notice that the counter is increasing almost 1000 times in the time its takes our program to print its value. This is because serial communication is slow compared to our timer!
 
-<br>
-
 \section{Changing the Speed of the Timer}
-
 From what we've seen so far, we can see how fast timers on the Arduino count, and how it has many different configuration options. This fast and precise counting can be used for many applications, like using \href{https://www.arduino.cc/en/Tutorial/PWM}{PWM} to change the brightness of an LED or to play a particular note through a speaker. But we are looking to recreate the delay function, which means we want to measure longer time periods.
 
 One configuration option the Arduino's timers offer us is to slow down the speed of the counting using a prescaler. For timer1, instead of having it count 16 million time a second, we can also set it to count 8, 64, 256, or 1024 times slower. By default timer1 on the Arduino is set to count 16,000,000 / 64 times a second, or at 250,000Hz.
@@ -108,10 +103,7 @@ You can uncomment or comment the no prescaler and 1024 prescaler settings and wa
 
 \includegraphics{images/0004-twoprescalerexamples.png}
 
-<br>
-
 \section{Timing Even Longer Periods}
-
 Even though using prescalers slows down the timer, many projects require the ability to wait for minutes, hours, days, or even weeks. This isn't possible even the timer1's 16 bits while using its highest prescaler.
 
 But there is a solution: to introduce another variable to count the counter. This is perhaps easiest to demonstrate as a program that blinks an LED:
@@ -145,5 +137,4 @@ Given what we know, we can work out how often the Arduino's on-board LED should 
 But there is a slight problem here. If timer1 was reset to 0 precisely when it reached 16000, and the LED was toggled at the exact moment it overflowed for the tenth time, then it would be precisely ten seconds between each toggle. But timer1 is actually being allowed to count over 16000 before we reset it (so it might reach 16100, for example) and so it will take longer than 10 seconds before we toggle the LED. 
 
 This imprecision is a problem we'll solve next time, when we introduce interrupts.
-
 \end{document}

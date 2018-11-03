@@ -52,60 +52,6 @@ char **process_cmd(char **str) {
     return res;
 }
 
-char *str_copyCmd(char *str, char **cmd) {
-    char *ptr = str;
-    while(*ptr != '{' && *ptr != ' ') {
-        ptr++;
-    }
-    int len = ptr - str;
-    *cmd = xmalloc(sizeof(char) * (len+1));
-    char *copyPtr = *cmd;
-    while(*str != '{') {
-        *copyPtr = *str;
-        str++, copyPtr++;
-    }
-    *copyPtr = '\0';
-    return str;
-}
-
-char *getStrArg(char *str, char *arg) {
-    if(*str != '{') { log_err("Cmd should be followed by '{'!"); assert(0); }
-    str++;
-    int len = 0;
-    for(int i = 0; i < 128; i++) {
-        if(str[i] == '}') { len = i; break; }
-        if(str[i] == '\0') { log_err("str shouldn't end before cmd arg ends"); assert(0); }
-        if(i == 127) { log_err("arg cannot be longer than 128 chars"); assert(0); }
-    }
-    
-    for(int i = 0; i < len; i++) {
-        arg[i] = *str;
-        str++;
-    }
-    arg[len] = '\0';
-    return str++;
-}
-
-char *getIntArg(char *str, int *arg) {
-    if(*str != '{') { assert(0); }
-    str++;
-    int len = 0;
-    for(int i = 0; i < 6; i++) {
-        if(str[i] == '}') { len = i; break; }
-        if(str[i] == '\0') { assert(0); }
-        if(i == 5) { assert(0); }
-    }
-    
-    char strArg[6];
-    for(int i = 0; i < len; i++) {
-        strArg[i] = *str;
-        str++;
-    }
-    strArg[len] = '\0';
-    *arg = str_toint(strArg);
-    return ++str;
-}
-
 char *getTextToEnd(char *str, char *type, char **text) {
     char *strPtr = str; 
     while(*strPtr != '\0') {
@@ -133,7 +79,7 @@ char *getTextToEnd(char *str, char *type, char **text) {
 }
 
 char *convertToHtml(char *str) {
-    char *result = str_copy("<p>"); 
+    char *result = str_copy(""); 
     char *strPtr = str;
     char *strCur = str;
 
@@ -153,7 +99,6 @@ char *convertToHtml(char *str) {
                 result = str_concat(result, "\">");
                 result = str_concat(result, arr[2]);
                 result = str_concat(result, "</a>");
-                strPtr = strCur;
             } else if(str_equal(arr[0], "includegraphics")) {
                 assert(arr_len(arr) == 2);
                 char link[2048];
@@ -161,7 +106,6 @@ char *convertToHtml(char *str) {
                 result = str_concat(result, "<img src=\"");
                 result = str_concat(result, arr[1]);
                 result = str_concat(result, "\"><br><br>");
-                strPtr = strCur;
             } else if(str_equal(arr[0], "section")) {
                 assert(arr_len(arr) == 2);
                 char sectionTitle[1024];
@@ -169,51 +113,33 @@ char *convertToHtml(char *str) {
                 result = str_concat(result, "<br>\n<h3>");
                 result = str_concat(result, arr[1]);
                 result = str_concat(result, "</h3>\n");
-
-                strPtr = strCur;
             } else if(str_equal(arr[0], "begin")) {
                 assert(arr_len(arr) == 2);
-                dbg("beginType: %s\n", arr[1]);
                 if(str_equal(arr[1], "blockquote")) {
                     result = str_concat(result, "<blockquote>\n");
-                    char *quoteText;
-                    strCur = getTextToEnd(strCur, "blockquote", &quoteText);
-                    char *quoteTextStart = quoteText;
-                    while(*quoteText != '\0') {
-                        if(*quoteText == '\n') {
-                            *quoteText = '\0';
-                            result = str_concat(result, quoteTextStart);
-                            result = str_concat(result, "<br>\n");
-                            quoteTextStart = quoteText + 1;
-                        }
-                        quoteText++;
-                    }
-                    result = str_concat(result, quoteText);
-                    result = str_concat(result, "\n</blockquote>\n");
-
-                    strCur++;
-                    strPtr = strCur;
-                } else if(str_equal(arr[1], "itemize")) {
-                    // TODO
                 }
-            }
-        } else if(*strCur == '\n') {
-            *strCur = '\0'; // Needed to copy text we've just gone over
-            strCur++;
-            result = str_concat(result, strPtr);
-
-            //char *prevText = str_copyToPtr(strPtr, strCur);
-            //result = str_concat(result, prevText);
-
-            strPtr = strCur;
-
-            if(*strCur == '\n') { // Two newlines in a row
-                result = str_concat(result, "</p>\n<p>");
-
-                strPtr = strCur;
+            } else if(str_equal(arr[0], "end")) {
+                assert(arr_len(arr) == 2);
+                if(str_equal(arr[1], "blockquote")) {
+                    result = str_concat(result, "</blockquote>\n");
+                }
+            } else if(str_equal(arr[0], "newline")) {
+                log_info("NEWLINE!");
+                assert(arr_len(arr) == 1);
+                result = str_concat(result, "<br>");
+            } else if(str_equal(arr[0], "tab")) {
+                log_info("TAB!");
+                assert(arr_len(arr) == 1);
+                result = str_concat(result, "&nbsp;&nbsp;");
             } else {
-                continue;
+                // TODO: Unknown command
             }
+            strPtr = strCur;
+        } else if(*strCur == '\n') {
+            char *prevText = str_copyToPtr(strPtr, strCur);
+            result = str_concat(result, prevText);
+            result = str_concat(result, "<br>");
+            strPtr = strCur;
         }
         strCur++;
     }
@@ -316,28 +242,23 @@ char *get_date(char *str) {
 
 char *convert_body(char* str) {
     Post post = createPost(str);
-
     post.body = convertToHtml(post.body);
 
     char *html = str_copy("<h1>");
     html = str_concat(html, post.title);
-
     if(str_isint(post.seriesPart)) {
         html = str_concat(html, " - ");
         html = str_concat(html, post.series);
         html = str_concat(html, " - Part ");
         html = str_concat(html, post.seriesPart);
     }
-
     html = str_concat(html, "</h1>\n");
 
     if(!str_equal(post.title, "About")) {
         html = str_concat(html, "<h2>");
-
         char *date = date_nice(post.dateYear, post.dateMonth, post.dateDay);
         html = str_concat(html, date);
         free(date);
-
         html = str_concat(html, "</h2>\n");
     }
     html = str_concat(html, post.body);
