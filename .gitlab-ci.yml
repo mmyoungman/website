@@ -4,7 +4,6 @@ pages:
     stage: deploy
     script:
     - ./post-to-html/compile.sh
-    - pip3 install markdown
     - python3 generate_website.py
     artifacts:
         paths:
