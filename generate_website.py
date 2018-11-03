@@ -1,6 +1,6 @@
-import os
-import markdown
+#!/usr/bin/env python
 
+import os
 import subprocess
 from ctypes import cdll
 from ctypes import c_char_p

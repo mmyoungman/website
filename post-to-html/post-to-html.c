@@ -46,6 +46,8 @@ char **process_cmd(char **str) {
         dbg("arg: %s", arg);
         ptr++;
     }
+    arr_free(cmd);
+    arr_free(arg);
     *str = ptr;
     return res;
 }
