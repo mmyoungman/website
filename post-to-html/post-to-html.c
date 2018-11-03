@@ -1,16 +1,8 @@
 #include "lib-mmy.h"
 
-char *str_match(char *ptr, char *match) {
-    int matchLen = str_len(match);
-    for(int i = 0; i < matchLen; i++) {
-        if(ptr[i] != match[i]) { return 0; }
-    }
-    return ptr + matchLen;
-}
-
 char *str_copyToPtr(char *start, char *end) {
     char *res = 0;
-    //assert(start < end); // Avoid doing this? UB?
+    //assert(start < end); // Doesn't work? UB?
     while(start != end) {
         arr_push(res, *start);
         start++;
@@ -230,15 +222,15 @@ char *convertToHtml(char *str) {
 }
 
 typedef struct Post {
-    char title[128];
+    char title[1024];
     char author[128];
     int dateYear;
     int dateMonth;
     int dateDay;
+    char series[1024];
+    char seriesPart[128];
     char **tags;
     char **categories;
-    char series[128];
-    int seriesPart;
     char *blurb;
     char *body;
 } Post;
@@ -253,15 +245,23 @@ Post createPost(char* str) {
                 continue; 
             } else if(str_equal(arr[0], "title")) {
                 assert(arr_len(arr) == 2);
-                xmemcpy(post.title, arr[1], str_len(arr[1])+1); 
+                xmemcpy(post.title, arr[1], str_len(arr[1])); 
+                post.title[str_len(arr[1])] = '\0';
             } else if(str_equal(arr[0], "author")) {
                 assert(arr_len(arr) == 2);
-                xmemcpy(post.author, arr[1], str_len(arr[1])+1);
+                xmemcpy(post.author, arr[1], str_len(arr[1]));
+                post.author[str_len(arr[1])] = '\0';
             } else if(str_equal(arr[0], "date")) {
                 assert(arr_len(arr) == 4);
                 post.dateYear = str_toint(arr[1]);
                 post.dateMonth = str_toint(arr[2]);
                 post.dateDay = str_toint(arr[3]);
+            } else if(str_equal(arr[0], "series")) {
+                assert(arr_len(arr) == 3);
+                xmemcpy(post.series, arr[1], str_len(arr[1]));
+                post.series[str_len(arr[1])] = '\0';
+                xmemcpy(post.seriesPart, arr[2], str_len(arr[2]));
+                post.seriesPart[str_len(arr[2])] = '\0';
             } else if(str_equal(arr[0], "begin")) {
                 assert(arr_len(arr) == 2);
                 if(str_equal(arr[1], "blurb")) {
@@ -279,23 +279,20 @@ Post createPost(char* str) {
 }
 
 char *get_title(char *str) {
-    char title[256];
     while(*str != '\0') {
         if(*str == '\\') {
-            str++;
-            char *cmd;
-            str = str_copyCmd(str, &cmd);
-            dbg("cmd: %s\n", cmd);
-            if(str_equal(cmd, "title")) {
-                str = getStrArg(str, title);
-                dbg("title: %s\n", title);
-                free(cmd);
-                return str_copy(title);
+            char **arr = process_cmd(&str);
+            dbg("cmd: %s\n", arr[0]);
+            if(str_equal(arr[0], "title")) {
+                assert(arr_len(arr) == 2);
+                dbg("title: %s\n", arr[1]);
+                return arr[1];
             }
+        } else {
+            str++;
         }
-        str++;
-        //TODO: If \series, add it?
     }
+    log_err("No \\title{} found!");
     assert(0);
 }
 
@@ -324,6 +321,14 @@ char *convert_body(char* str) {
 
     char *html = str_copy("<h1>");
     html = str_concat(html, post.title);
+
+    if(str_isint(post.seriesPart)) {
+        html = str_concat(html, " - ");
+        html = str_concat(html, post.series);
+        html = str_concat(html, " - Part ");
+        html = str_concat(html, post.seriesPart);
+    }
+
     html = str_concat(html, "</h1>\n");
 
     if(!str_equal(post.title, "About")) {
