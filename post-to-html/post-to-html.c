@@ -11,21 +11,48 @@ char *str_copyToPtr(char *start, char *end) {
     return res;
 }
 
+int str_match(char *str, char *match) {
+    while(*match != '\0') {
+        if(*str != *match || *str == '\0') {
+            return 0;
+        }
+        str++, match++;
+    }
+    return 1;
+}
+
 char **process_cmd(char **str) {
     char **res = 0;
     char *cmd = 0;
 
     assert(**str == '\\');
     (*str)++;
-    char *ptr = *str;
 
-    // TODO: This is broke
-    if(*ptr == '_' || *ptr == '\\') { // escaped chars
-        arr_push(cmd, *ptr);
-        arr_push(res, cmd);
-        (*str)++;
+    if(str_match(*str, "tab")) { 
+        arr_push(res, "tab");
+        *str += str_len("tab");
         return res;
     }
+
+    if(str_match(*str, "newline")) { 
+        arr_push(res, "newline");
+        *str += str_len("newline");
+        return res;
+    }
+
+    if(str_match(*str, "_")) {
+        arr_push(res, "_");
+        *str += str_len("_");
+        return res;
+    }
+
+    if(str_match(*str, "\\")) {
+        arr_push(res, "\\");
+        *str += str_len("\\");
+        return res;
+    }
+
+    char *ptr = *str;
 
     while(*ptr != '{' && *ptr != ' ' && *ptr != '\0') {
         arr_push(cmd, *ptr);
@@ -124,13 +151,15 @@ char *convertToHtml(char *str) {
                     result = str_concat(result, "</blockquote>\n");
                 }
             } else if(str_equal(arr[0], "newline")) {
-                log_info("NEWLINE!");
                 assert(arr_len(arr) == 1);
                 result = str_concat(result, "<br>");
+                strPtr = strCur;
+                continue; // incase \newline\newline consecutively
             } else if(str_equal(arr[0], "tab")) {
-                log_info("TAB!");
                 assert(arr_len(arr) == 1);
                 result = str_concat(result, "&nbsp;&nbsp;");
+                strPtr = strCur;
+                continue; // incase \tab\tab consecutively
             } else {
                 // TODO: Unknown command
             }
@@ -138,7 +167,11 @@ char *convertToHtml(char *str) {
         } else if(*strCur == '\n') {
             char *prevText = str_copyToPtr(strPtr, strCur);
             result = str_concat(result, prevText);
-            result = str_concat(result, "<br>");
+            strCur++;
+            if(*strCur == '\n') {
+                result = str_concat(result, "<br>");
+            }
+            strCur--;
             strPtr = strCur;
         }
         strCur++;
