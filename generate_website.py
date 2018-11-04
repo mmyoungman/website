@@ -97,12 +97,14 @@ if __name__ == "__main__":
             post_content_b = bytes(f.read(), encoding='utf-8')
             f.close()
             blog_posts_b += post_to_html_lib.convert_body(post_content_b)
+            blog_posts_b += b"<br><br><br>"
     else:
         for i in range(len(post_list)-1, -1, -1):
             f = open('content/' + post_list[i])
             post_content_b = bytes(f.read(), encoding='utf-8')
             f.close()
             blog_posts_b += post_to_html_lib.convert_body(post_content_b)
+            blog_posts_b += b"<br><br><br>"
 
     blog_html = blog_posts_b.decode('utf-8')
     full_blog_html = post_template.replace("{{{post}}}", blog_html)
