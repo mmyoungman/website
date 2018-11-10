@@ -2,11 +2,20 @@
 
 main();
 
+var mouseX = 0;
+var mouseY = 0;
+var pageX = 1;
+var pageY = 1;
+
 function mouseClick(event) {
-   var x = event.pageX;
-   var y = event.pageY;
-   var coords = "X coords: " + x + ", Y coords: " + y;
+   mouseX = event.pageX;
+   mouseY = event.pageY;
+   pageX = document.documentElement.clientWidth;
+   pageY = document.documentElement.clientHeight;
+
+   var coords = "X coords: " + mouseX + ", Y coords: " + mouseY;
    document.getElementById("mousePos").innerHTML = coords;
+   main();
 }
 
 function createShader(gl, type, source) {
@@ -38,8 +47,6 @@ function createProgram(gl, vertexShader, fragmentShader) {
 
 function main() {
    const canvas = document.getElementById("c");
-   //canvas.width = document.body.clientWidth;
-   //canvas.height = document.body.clientHeight;
    canvas.width = document.documentElement.clientWidth;
    canvas.height = document.documentElement.clientHeight;
    const gl = canvas.getContext("webgl");
@@ -91,8 +98,10 @@ function main() {
       var positionBuffer = gl.createBuffer();
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
+      var one = (2 * (mouseX / pageX)) - 1;
+      var two = (2 * (1 - (mouseY / pageY))) - 1;
       var positions = [
-         0, 0,
+         one, two,
          0, 0.5,
          0.7, 0,
       ];
@@ -110,24 +119,17 @@ function main() {
       //   return false;
       //}
       //resizeCanvasToDisplaySize(gl.canvas);
-
-      // Tell WebGL how to convert from clip space to pixels
       //gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-      // Clear the canvas
       gl.clearColor(0, 0, 0, 0);
       gl.clear(gl.COLOR_BUFFER_BIT);
 
-      // Tell it to use our program (pair of shaders)
       gl.useProgram(program);
 
-      // Turn on the attribute
       gl.enableVertexAttribArray(positionAttributeLocation);
 
-      // Bind the position buffer.
       gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-      // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
       var size = 2;          // 2 components per iteration
       var type = gl.FLOAT;   // the data is 32bit floats
       var normalize = false; // don't normalize the data
@@ -136,7 +138,6 @@ function main() {
       gl.vertexAttribPointer(
          positionAttributeLocation, size, type, normalize, stride, offset);
 
-      // draw
       var primitiveType = gl.TRIANGLES;
       var offset = 0;
       var count = 3;
@@ -144,5 +145,4 @@ function main() {
 
       document.body.style.background = "url(" + canvas.toDataURL() + ")";
    });
-
 }

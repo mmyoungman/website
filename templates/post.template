@@ -43,7 +43,7 @@
          </div>
       </div>
 
-      <canvas id="c" style="display:none" width="1024" height="1024"></canvas>
+      <canvas id="c" style="display:none"></canvas>
       <script src="webgl.js" type="application/javascript"></script>
    </body>
 
