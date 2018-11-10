@@ -39,7 +39,7 @@ if __name__ == "__main__":
         os.makedirs("public/")
     else:
         for filename in os.listdir("public/"):
-            if filename in ["fonts", "images", "style.css"]:
+            if filename in ["fonts", "images", "style.css", "webgl.js"]:
                 continue
             os.remove("public/" + filename)
 
