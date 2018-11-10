@@ -8,10 +8,7 @@
       <link rel='shortcut icon' href='images/favicon.ico' type='iamges/x-icon' />
    </head>
 
-   <body>
-      <canvas id="c" style="display:none" width="1024" height="1024"></canvas>
-      <script src="webgl.js" type="application/javascript"></script>
-
+   <body onclick="mouseClick(event)">
       <div class="wrapper">
          <div class="grid header">
             <h1><a href="index.html" style="text-decoration: none;">Mark Youngman's Website</a></h1>
@@ -37,6 +34,7 @@
          </div>
 
          <div class="grid content">
+            <p id="mousePos"></p>
             {{{post}}}
          </div>
 
@@ -44,6 +42,9 @@
             <a href="#"><p style="text-align:center">Top</p></a>
          </div>
       </div>
+
+      <canvas id="c" style="display:none" width="1024" height="1024"></canvas>
+      <script src="webgl.js" type="application/javascript"></script>
    </body>
 
 </html>

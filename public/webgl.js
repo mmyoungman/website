@@ -2,6 +2,13 @@
 
 main();
 
+function mouseClick(event) {
+   var x = event.pageX;
+   var y = event.pageY;
+   var coords = "X coords: " + x + ", Y coords: " + y;
+   document.getElementById("mousePos").innerHTML = coords;
+}
+
 function createShader(gl, type, source) {
    var shader = gl.createShader(type);
    gl.shaderSource(shader, source);
@@ -31,19 +38,16 @@ function createProgram(gl, vertexShader, fragmentShader) {
 
 function main() {
    const canvas = document.getElementById("c");
+   //canvas.width = document.body.clientWidth;
+   //canvas.height = document.body.clientHeight;
+   canvas.width = document.documentElement.clientWidth;
+   canvas.height = document.documentElement.clientHeight;
    const gl = canvas.getContext("webgl");
 
    if (gl === null) {
       alert("Unable to initialize WebGL!");
       return;
    }
-
-   //gl.clearColor(0.0, 1.0, 1.0, 1.0);
-   //gl.clear(gl.COLOR_BUFFER_BIT);
-
-   //console.log(canvas.toDataURL());
-
-   //document.body.style.background = "url(" + canvas.toDataURL() + ")";
 
    var vPromise = fetch('./shaders/2d-vertex-shader.glsl')
       .then(response => {
