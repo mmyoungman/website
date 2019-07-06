@@ -1,8 +1,2 @@
 tags
 public/*.html
-post-to-html/post-to-html.o
-post-to-html/debug
-post-to-html/post-to-html.config
-post-to-html/post-to-html.creator*
-post-to-html/post-to-html.files
-post-to-html/post-to-html.includes
