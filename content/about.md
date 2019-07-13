@@ -17,6 +17,6 @@ Software tester at Hive IT
 
 University of Birmingham - Computer Science BSc 2:1
 
-AWS Certified Developer - Associate
+[AWS Certified Developer - Associate](https://www.certmetrics.com/amazon/public/badge.aspx?i=2&t=c&d=2019-07-03&ci=AWS00875641)
 
 <!-- Links -->
