@@ -23,11 +23,13 @@ For our alternate delay function, we'll be using timer1 -- timer0 is already bei
 Timer1's 16-bit counter, TCNT1, is found at address 0x84. We can access it like so:
 
 > void setup() {
+>
 > &nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
 >
 > }
 >
 > void loop() {
+>
 > &nbsp;&nbsp;Serial.println(*(uint16_t *)0x84);
 >
 > }
@@ -45,6 +47,7 @@ Both of these problems can be solved by changing configuration options for the t
 By default timer1 is set (amongst other things) to mode 1, which only allows it to count up to 255 -- as indicated in hexidecimal in the "TOP" column. This is because the Arduino sets up timer1 and timer2 for use with the [analogWrite function](https://www.arduino.cc/reference/en/language/functions/analog-io/analogwrite/). By altering this to mode 0, it will then count to 0xFFFF or 65535. This can be done by setting the four waveform generation bits -- WGM10 to WGM13 -- all to zero. These bits are confusing located in two different locations. WGM10 and WGM11 are the 0th and 1st bits of TCCR1A (0x80) and WGM12 and WGM13 are the 3rd and 4th bits of TCCR1B (0x81).
 
 > void setup() {
+>
 > &nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
 >
 > &nbsp;&nbsp;\*(uint8\_t \*)0x80 &= 0b11111100;
@@ -54,6 +57,7 @@ By default timer1 is set (amongst other things) to mode 1, which only allows it 
 > }
 > 
 > void loop() {
+>
 > &nbsp;&nbsp;Serial.println(\*(uint16\_t \*)0x84);
 >
 > }
@@ -90,8 +94,9 @@ We can change to the particular prescaler value we want using the clock select b
 We can show how using (or not using) a prescaler can speed up or slow down timer1:
 
 > void setup() {
+>
 > &nbsp;&nbsp;Serial.begin(19200); // Remember Serial Monitor must also be set to 19200
-> &nbsp;&nbsp;
+> 
 > &nbsp;&nbsp;// Setting waveform generation mode 0
 >
 > &nbsp;&nbsp;\*(uint8\_t \*)0x80 &= 0b11111100;
@@ -113,6 +118,7 @@ We can show how using (or not using) a prescaler can speed up or slow down timer
 > }
 > 
 > void loop() {
+>
 > &nbsp;&nbsp;Serial.println(*(uint16_t *)0x84);
 > 
 > }
@@ -130,6 +136,7 @@ Even though using prescalers slows down the timer, many projects require the abi
 But there is a solution: to introduce another variable to count the counter. This is perhaps easiest to demonstrate as a program that blinks an LED:
 
 > void setup() {
+>
 > &nbsp;&nbsp;pinMode(13, OUTPUT);
 >  
 > &nbsp;&nbsp;// Setting waveform generation mode 0
@@ -149,6 +156,7 @@ But there is a solution: to introduce another variable to count the counter. Thi
 > int count = 0;
 > 
 > void loop() {
+>
 > &nbsp;&nbsp;if(*(uint16_t *)0x84 > 16000) {
 >
 > &nbsp;&nbsp;&nbsp;&nbsp;count++;

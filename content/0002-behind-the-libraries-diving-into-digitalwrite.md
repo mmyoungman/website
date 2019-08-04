@@ -5,14 +5,19 @@ Diving into DigitalWrite -- Behind the Libraries Part One
 -
 
 > void setup() {
+>
 > &nbsp;&nbsp;pinMode(13, OUTPUT);
 >
 > }
 >
 > void loop() {
+>
 > &nbsp;&nbsp;digitalWrite(13, HIGH);
+>
 > &nbsp;&nbsp;delay(1000);
+>
 > &nbsp;&nbsp;digitalWrite(13, LOW);
+>
 > &nbsp;&nbsp;delay(1000);
 >
 > }
@@ -37,17 +42,17 @@ The datasheet (p116) tells us that the bit that controls the output of that pin 
 
 ![portb datasheet](images/0002-portbdatasheet450px.png)
 
-__NOTE__: While the standard PC contains only one memory space, the ATmega328p actually contains [three separate memory spaces](http://playground.arduino.cc/Learning/Memory). This introduces ambiguity, as the address 0x25 can refer to multiple pieces of memory. If we try to access address 0x25 in C, however, the compiler gives us access to SRAM, which is what we want.
+__NOTE__: While a standard PC contains only one memory space, the ATmega328p actually contains [three separate memory spaces](http://playground.arduino.cc/Learning/Memory). This introduces ambiguity, as the address 0x25 can refer to multiple pieces of memory. If we try to access address 0x25 in C, however, the compiler gives us access to SRAM, which is what we want.
 
-We can see from the datasheet the how the eight bits of the register are numbered, with the 0th bit being the least significant, and the 7th being the final and most significant.
+We can see from the datasheet how the eight bits of the register are numbered, with the 0th bit being the least significant, and the 7th being the final and most significant.
 
-Unfortunately, if we want to avoid all library use, we have to do the following jiggery pokery to access this register in our code:
+Unfortunately, if we want to avoid all library use, the following jiggery pokery is necessary to access this register in our code:
 
 > \*(uint8\_t \*)0x25
 
 The "(uint8\_t \*)" casts the hexidecimal value 0x25 as an [unsigned](http://cplus.about.com/od/glossar1/g/unsigneddefn.htm) 8-bit integer that points to something (i.e. we're saying it is an address). Once we’ve established that 0x25 is an address, the sole "\*" before it asks the program to give us access to the memory located at that address -- known as dereferencing a pointer.
 
-__NOTE__: There is a more readable way to access registers like this by using predesignated labels. In this case, rather than "\*(uint8\_t \*)0x25", we could have simply wrote "PORTB". 
+__NOTE__: There is a more readable way to access registers like this by using predesignated labels defined for us. In this case, rather than "\*(uint8\_t \*)0x25", we could have simply wrote "PORTB". 
 
 Now we have access to the 8-bit register and we can change the values of those bits. In C, we can do this with bitwise operators, specifically the & and |, relating to logical AND and OR respectively.
 
@@ -64,11 +69,13 @@ This sets the 5th bit of the register at address 0x25 to 0, while not changing t
 Because we know the 5th bit in that particular register controls whether pin 13 is on or off, we can use these lines of code and remove digitalWrite from the default blink program.
 
 > void setup() {
+>
 > &nbsp;&nbsp;pinMode(13, OUTPUT);
 > 
 > }
 > 
 > void loop() {
+>
 > &nbsp;&nbsp;\*(uint8\_t \*)0x25 |= 0b00100000;
 >
 > &nbsp;&nbsp;delay(1000);
@@ -81,7 +88,7 @@ Because we know the 5th bit in that particular register controls whether pin 13 
 
 If you load this code on to your Arduino, it will work like the default blink program found in File -> Examples -> 01.Basics.
 
-__NOTE__: This isn't a sensible way to write code. We could instead have used "PORTB |= (1 << PORTB5);" and "PORTB &= ~(1 << PORTB5);". That would be more readable.
+__NOTE__: We could instead have used "PORTB |= (1 << PORTB5);" and "PORTB &= ~(1 << PORTB5);".
 
 ### Turning Other Pins On/Off
 

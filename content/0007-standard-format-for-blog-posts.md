@@ -21,7 +21,7 @@ I didn't want to compile the entire Python runtime each time I pushed a change, 
 ### Creating a Python C extension
 Turned out that creating a Python C extension is as easy as copying and pasting [this example](https://tutorialedge.net/python/python-c-extensions-tutorial/), so I was up and running in two shakes. I then tested to see if it would work with my [GitLab pipeline](https://gitlab.com/mmyoungman/homepage/-/jobs/113444065), which it did.
 
-Things were looking good, but I knew debugging was going to be essential, and after looking at [the hoops I'd have to jump through](http://droettboom.com/blog/2015/11/20/gdb-python-extensions/), I noped out and decided to try ctypes.
+Things were looking good, but I knew debugging was going to be essential, and after looking at [the hoops I'd have to jump through](http://droettboom.com/blog/2015/11/20/gdb-python-extensions/), I decided to try ctypes instead.
 
 ### Using ctypes
 The ctypes module allows you to call a C dynamic library -- something I'd [previously messed around with](https://github.com/mmyoungman/code-snippets/tree/19e130c993dae7fd2f5661554badb1189a8289bc/c/system-calls/dynamicLibrary) -- in Python. It also meant I could debug with QtCreator, as I usually do with C.

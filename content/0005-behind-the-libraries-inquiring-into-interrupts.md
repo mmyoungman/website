@@ -17,6 +17,7 @@ It also means we can respond quicker to the motion sensor -- which is the import
 Firstly, we'll tackle how to respond quickly to the timer. Previously, we constantly polled the value of TCNT1 to check whether it had gone beyond a certain value.:
 
 > if(TCNT1 > 16000) {
+>
 > &nbsp;&nbsp;// Do stuff
 > 
 > &nbsp;&nbsp;TCNT1 = 0; // reset timer1
@@ -26,6 +27,7 @@ Firstly, we'll tackle how to respond quickly to the timer. Previously, we consta
 Now we want timer1 to do this checking for us. One way we can avoid constantly polling TCNT1 is have timer1 trigger an interrupt every time timer1 overflows:
 
 > void setup() {
+>
 > &nbsp;&nbsp;Serial.begin(19200);
 >
 > &nbsp;&nbsp;// Setting waveform generation mode 0
