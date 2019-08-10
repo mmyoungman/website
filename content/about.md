@@ -1,7 +1,7 @@
 About 
 =====
 
-Mark is software engineer at [Hive IT](https://www.hiveit.co.uk/).
+Mark is software engineer from Sheffield, UK. He works at [Hive IT](https://www.hiveit.co.uk/).
 
 ## Employment History
 
