@@ -1,8 +1,8 @@
 @font-face {
-    font-family: 'Assistant';
-    src: url('fonts/assistant/Assistant-Regular.otf') format('opentype');
-    font-weight: normal;
-    font-style: normal;
+      font-family: 'Assistant';
+      src: url('fonts/assistant/Assistant-Regular.otf') format('opentype');
+      font-weight: normal;
+      font-style: normal;
 }
 
 body {
@@ -49,6 +49,10 @@ a:hover {
 blockquote {
     font-family: "Consolas", "courier new";
     font-size: 0.9em;
+}
+
+code {
+    background-color: #F8F8F8
 }
 
 img, table {
