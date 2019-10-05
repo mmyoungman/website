@@ -13,6 +13,16 @@ Software tester at Hive IT
 
 <br>
 
+## Notable Projects
+
+** November 2018 --**
+[Department for Education - Explore Education Statistics](https://github.com/dfe-analytical-services/explore-education-statistics/commits?author=markhiveit)
+
+** March 2018 -- October 2018**
+Sky Betting and Gaming - Safer Gambling squad.
+
+<br>
+
 ## Qualifications
 
 University of Birmingham - Computer Science BSc 2:1

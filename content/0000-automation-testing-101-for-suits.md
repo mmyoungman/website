@@ -40,3 +40,7 @@ Automation tests cannot guarantee that the latest build is ready for production.
 
 Automated test suites can take a long time to run. If developers are expected to test their branches before creating pull requests, this can significantly slow progress and generally harm morale. 
 There are often false-positive failures. There is often a battle between having a comprehensive automation test suite and having false-positive failures.
+
+### Why are automation tests not so good against production?
+
+Because automation tests rely on test data, and if that test data isn't the same each and every test run, it becomes difficult and/or impossible to test certain features of a service. This why environments at the start of a CI pipeline generally focus more on automated tests while environments at the end focus on monitoring.
