@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/illeist
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://mark.youngman.info
+  * I am illeist (https://keybase.io/illeist) on keybase.
+  * I have a public key ASA4deOVUwGDYzhAwalTYRVEJcrZqevS_lwzpmEAC5A2CAo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "012076293d491f3d9168ec1215e73eb8c7163b415ebbdc1ee1468c4e054eee6beb900a",
+      "host": "keybase.io",
+      "kid": "01203875e395530183633840c1a95361154425cad9a9ebd2fe5c33a661000b9036080a",
+      "uid": "50586164ae914dc5fa3dfad9c1256a19",
+      "username": "illeist"
+    },
+    "merkle_root": {
+      "ctime": 1584189284,
+      "hash": "d074bfc5e7ed81e2a70e665d65276014791d80f3320704ed22c174d909ae5d3b8cbd05633e22848b52cec6467a3e8a2fc3981e3b00e0f004dd704bdc3b4596da",
+      "hash_meta": "0502f286d3f777e1071c9cc122b8ef20f70798a62947664d1e2157feaad76a84",
+      "seqno": 15368330
+    },
+    "service": {
+      "entropy": "ytsrKbySOE9qKRtkvwoAaZvs",
+      "hostname": "mark.youngman.info",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "5.3.0"
+  },
+  "ctime": 1584189290,
+  "expire_in": 504576000,
+  "prev": "4e63130d79a41a56bd3ecf82c779e7effe8233f065b7aef83234a4b4d5bc3f0b",
+  "seqno": 11,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgOHXjlVMBg2M4QMGpU2EVRCXK2anr0v5cM6ZhAAuQNggKp3BheWxvYWTESpcCC8QgTmMTDXmkGla9Ps+Cx3nn7/6CM/Blt674MjSktNW8PwvEIM75Psk4KiDArJNkMhHV4BFfWu9FzjZVbT2ucSTFMVcDAgHCo3NpZ8RA+ZhjV0l33HqmHcGTfqHunQAFKI2vf7nnAQNJeHB62y6nS13qw53e5IDdSLiT3aC+0U282RVKoBkIiWlZz3R8AahzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEILqR5VrcoNQif/WDVM7BCRPhInZsbBOx3bJd4vU1qPXPo3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/illeist
+
+==================================================================
