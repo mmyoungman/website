@@ -1,0 +1,45 @@
+Web Automation Testing 101 For Suits
+4th August 2019
+
+<p>An automation test suite should provide confidence in a new build rather than guaranteeing it is without defects. It should be treated as an individual tool in an arsenal. They work best when combined with monitoring, canary deployments, and manual testing.</p>
+
+<p>When used well, automation testing is done with a realistic idea of its benefits, and the cost paid to reap those benefits. That tradeoff should inform what the automation tests look like for a particular project and how they are used.</p>
+
+<p>Unfortunately, this is rarely the way things go. The job of producing and writing the tests often falls to the testers themselves, and their lack of development experiences results in slow frameworks with low-ROI tests. ultimately lowering developer productivity and morale.</p>
+
+<p>If developers are forced to run a suite of tests against their branch before submitting a pull request, and those tests take over an hour to run, you will take a hit in developer productivity and morale.</p>
+
+<h3>Will automated testing remove the need for manual testing?</h3>
+
+<p>For the vast majority of cases, no. In my opinion, you will need a real human to sit in front of your product/service and test it, regardless of how comprehensiveness your your automated test suite is.</p>
+
+<p>In conjuction with canary deployments and monitoring, companies do practice continuous delivery, but I would still expect new builds to be manually tested at some point.</p>
+
+<h3>Will automated testing reduce the need for manual testing?</h3>
+
+<p>Yes, but they can present a new set of problems, especially as using an automated framework and writing automated tests is delving into developer territory, and in my experience these tasks tend to be done by testers.</p>
+
+<h3>What can automated tests do?</h3>
+
+<p>Automated tests can follow a strictly prescribed recipe to the letter.</p>
+
+<h3>What can automated tests not do?</h3>
+<p>If interpretation or judgement is required to perform a test, then an automated test isn't going to work.</p>
+
+<p>Examples of things that automated tests do badly:</p>
+
+<ul>
+<li>Check the UI layout</li>
+</ul>
+
+
+<p>Automation tests cannot guarantee that the latest build is ready for production. But it can give you extra confidence that it is ready, and combined with comprehensive monitoring of the production environment, you might</p>
+
+<h3>What are common problems with automated tests?</h3>
+
+<p>Automated test suites can take a long time to run. If developers are expected to test their branches before creating pull requests, this can significantly slow progress and generally harm morale.</p> 
+<p>There are often false-positive failures. There is often a battle between having a comprehensive automation test suite and having false-positive failures.</p>
+
+<h3>Why are automation tests not so good against production?</h3>
+
+<p>Because automation tests rely on test data, and if that test data isn't the same each and every test run, it becomes difficult and/or impossible to test certain features of a service. This why environments at the start of a CI pipeline generally focus more on automated tests while environments at the end focus on monitoring.</p>

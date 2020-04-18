@@ -1,0 +1,44 @@
+Computer setup
+15th August 2019
+
+<p>You can look at [my config repository](https://gitlab.com/mmyoungman/mmy-config).</p>
+
+<h3>Manjaro</h3>
+
+<p>Manjaro is currently my go-to linux distro, for a few reasons:</p>
+
+<ul>
+<li>avoiding formatting due to rolling updates</li>
+<li>getting the latest software</li>
+<li>and the range of software on offer by pacman and the AUR</li>
+</ul>
+
+<p>And despite all that I've found it to be stable.</p>
+
+<h3>XFCE4</h3>
+
+<p>I like XFCE because it is lightweight. I have a few keyboard shortcuts set up for basic window management, including the move-to-next-monitor script that allows me to jump a window around screens -- I don't know how it works, but I'm grateful to the authors.</p>
+
+<p>My only complaint with XFCE the inability to easily backup my configuration.</p>
+
+<h3>Configuration management</h3>
+
+<p>To manage config, I try to keep it source controlled, and a bash script places symlinks in the right places. This means changes to ~/.bashrc actually occur in my config repository, allowing me to easily push the same change to other computers. This strategy even survived an encounter with a heavily locked down mac.</p>
+
+<h3>Vim</h3>
+
+<p>Vim for me is less about the editor and more about the editing. I don't think which scheme is important -- vim, emacs, etc. -- but I did want to be proficient with one. I think vim is a good choice because it's ubiquitous -- plugins abound.</p>
+
+<p>The only thing I will say about vim configuration is turn capslock into escape! I tend to stick to defaults, but giving yourself a better way to return to normal mode is a must.</p>
+
+<h3>Bash's vi mode</h3>
+
+<p>For someone like myself who tends to reach for vim or vim plugins, bash's vi mode is The Way. It saves small amounts of time on a daily basis: well worth the price of setting up and switching.</p>
+
+<p>The downside is that vi mode will confuse someone who jumps on your machine to help -- although a few of my collegues, after being stung, did later return knowing enough vi to get by! </p>
+
+<p>The keys for making this work creating a .inputrc file with `set vi-ins-mode-string \1\e[6 q\2` and `set vi-cmd-mode-string \1\e[2 q\2` to set the cursor for normal and insert mode, and then `set keyseq-timeout 0` to remove any delay in the cursor when changing modes.</p>
+
+<h3>Other</h3>
+
+<p>I hope to work for a few more decades, and so am always on the lookout for small efficiency gains.</p>
