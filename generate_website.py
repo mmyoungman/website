@@ -1,5 +1,4 @@
 import os
-import markdown
 
 def get_filename(filepath):
     filename = os.path.split(filepath)[1] # remove path
@@ -7,14 +6,14 @@ def get_filename(filepath):
 
 def get_postname(post_filepath):
     f = open(post_filepath)
-    result = f.readline().rstrip("\n") # first line of post.md should be postname
+    result = f.readline().rstrip("\n") # first line of post.html should be postname
     f.close()
     return result
 
 def get_postdate(post_filepath):
     f = open(post_filepath)
     for i, line in enumerate(f):
-        if i == 3: # the post date should be on the fourth line of the .md file
+        if i == 1: # the post date should be on the second line of the .html file
             result = line.rstrip("\n")
             break
     f.close()
@@ -33,15 +32,16 @@ if __name__ == "__main__":
 
     # create post_list list and postlist_html string
     def is_a_post(name):
-        if "about.md" in name:
+        if "about.html" in name:
             return False
         elif name.startswith("0000-"):
             return False
-        elif name.endswith(".md"):
+        elif name.endswith(".html"):
             return True
         else:
             return False
     post_list = [post for post in sorted(os.listdir("content/")) if is_a_post(post)]
+    print('post_list: ', post_list)
 
     postlist_html = ""
     i = 0
@@ -65,35 +65,37 @@ if __name__ == "__main__":
     f.close()
 
     # create about.html
-    f = open('content/about.md')
-    about_markdown = f.read()
+    f = open('content/about.html')
+    about_html = f.read()
     f.close()
 
-    about_html = markdown.markdown(about_markdown, extensions=['tables'])
     about_html += "\n<br><br><br>\n"
-    full_about_html = about_template.replace("{{{post}}}", about_html)
+    full_about_html = about_template.replace("{{{posts}}}", about_html)
 
     f = open('public/about.html', "w")
     f.write(full_about_html)
     f.close()
 
     # create index.html
-    blog_markdown = ""
+    blog_html = ""
     if len(post_list) >= 5:
         for i in range(len(post_list)-1, len(post_list)-6, -1): # latest 5 posts on the page
             f = open('content/' + post_list[i])
-            post_content = f.read()
+            post_content = f'<h1>{f.readline()}</h1>\n'
+            post_content += f'<h2>{f.readline()}</h2>\n'
+            post_content += f.read()
             f.close()
-            blog_markdown += post_content + "<br><br><br>\n\n"
+            blog_html += post_content + "<br><br><br>\n\n"
     else:
         for i in range(len(post_list)-1, -1, -1):
             f = open('content/' + post_list[i])
-            post_content = f.read()
+            post_content = f'<h1>{f.readline()}</h1>\n'
+            post_content += f'<h2>{f.readline()}</h2>\n'
+            post_content += f.read()
             f.close()
-            blog_markdown += post_content + "<br><br><br>\n\n"
+            blog_html += post_content + "<br><br><br>\n\n"
 
-    blog_html = markdown.markdown(blog_markdown, extensions=['tables'])
-    full_blog_html = post_template.replace("{{{post}}}", blog_html)
+    full_blog_html = post_template.replace("{{{posts}}}", blog_html)
     full_blog_html = full_blog_html.replace("{{{postlist}}}", postlist_html)
 
     f = open('public/index.html', "w")
@@ -109,7 +111,7 @@ if __name__ == "__main__":
         archive_html += "<h2>" + postdate + "</h2>\n"
         archive_html += '<a href="' + post.rsplit(".", 1)[0] + '.html">' + postname + '</a>\n<br><br>\n'
 
-    full_archive_html = post_template.replace("{{{post}}}", archive_html)
+    full_archive_html = post_template.replace("{{{posts}}}", archive_html)
     full_archive_html = full_archive_html.replace("{{{postlist}}}", postlist_html)
     
     f = open('public/archive.html', "w")
@@ -119,11 +121,12 @@ if __name__ == "__main__":
     # create html post files
     for filename in post_list:
         f = open("content/" + filename)
-        post_markdown = f.read()
+        post_html = f'<h1>{f.readline()}</h1>\n'
+        post_html += f'<h2>{f.readline()}</h2>\n'
+        post_html += f.read()
         f.close()
 
-        post_html = markdown.markdown(post_markdown, extensions=['tables'])
-        full_post_html = post_template.replace("{{{post}}}", post_html)
+        full_post_html = post_template.replace("{{{posts}}}", post_html)
         full_post_html = full_post_html.replace("{{{postlist}}}", postlist_html)
 
         if not os.path.exists("public/"):

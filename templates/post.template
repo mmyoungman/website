@@ -32,7 +32,7 @@
          </div>
 
          <div class="grid content">
-            {{{post}}}
+            {{{posts}}}
          </div>
 
          <div class="grid footer">
