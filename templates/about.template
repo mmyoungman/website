@@ -33,7 +33,7 @@
 
          <div class="grid content">
             <img class="about" src="images/aboutpicture.png">
-            {{{post}}}
+            {{{posts}}}
          </div>
 
          <div class="grid footer">
