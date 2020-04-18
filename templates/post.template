@@ -25,7 +25,7 @@
 
          <div class="grid sidebar">
             <h2>About Mark</h2>
-            <p>Mark is a software engineer from Sheffield, UK. <a href=about.html>[Read more]</a></p> 
+            <p><a href=about.html>Mark is a software engineer from Sheffield, UK</a></p> 
 
             <h2>Posts</h2>
             {{{postlist}}}
@@ -33,6 +33,12 @@
 
          <div class="grid content">
             {{{posts}}}
+
+            <h3>
+              <center>
+                <a href="https://twitter.com/markmyoungman">Follow Mark on Twitter</a>
+              </center>
+            </h3>
          </div>
 
          <div class="grid footer">
