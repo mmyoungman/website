@@ -7,30 +7,31 @@
 
 body {
    font-family: 'Assistant', Helvetica, Arial, sans-serif;
-   margin: 10px;
+   margin: 0.25em;
    background-color: white;
 }
 
 p {
    font-size: 1em;
-   margin: 0 0 10px 0;
+   margin: 0 0 0.25em 0;
 }
 
 h1 {
-   font-size: 1.5em;
-   margin: 5px 0;
+   font-size: 1.4em;
+   margin: 0.25em 0;
 }
 
 h2 {
-   font-size: 1.25em;
-   padding: 10px 0 10px 0;
+   font-size: 1.3em;
+   padding: 0.5em 0 0.5em 0;
    margin: 0;
 }
 
 h3 {
-   font-size: 0.9em;
+   font-size: 1.1em;
    padding: 0;
-   margin: 0 0 10px 0;
+   margin: 0 0 0.5em 0;
+   padding: 1em 0 0 0;
 }
 
 a {
@@ -40,7 +41,7 @@ a {
 
 a:hover {
    text-decoration: none;
-   color: gray;
+   color: grey;
    transition: all 0.75s ease-in-out;
    -moz-transition: all 0.75s ease-in-out;
    -webkit-transition: all 0.75s ease-in-out;
@@ -52,7 +53,15 @@ blockquote {
 }
 
 code {
-    background-color: #F8F8F8
+    color: grey;
+    background-color: black;
+    padding: 2px;
+}
+
+pre {
+    color: grey;
+    background-color: black;
+    padding: 0.25em;
 }
 
 img, table {
@@ -63,7 +72,7 @@ img, table {
 img.about {
     width: 200px;
     height: auto;
-    padding: 20px;
+    padding: 0.5em;
     float: right;
 }
 
@@ -74,20 +83,20 @@ table, th, td {
 
 .grid {
    color: black;
-   padding: 20px 0;
+   padding: 0.5em 0;
    margin: 0;
 }
 
 .header {
    grid-area: header;
-   padding: 0 20px;
+   padding: 0 0.5em;
    margin: 0;
    border-bottom: solid 1px black;
 }
 
 .navbar {
    grid-area: navbar;
-   padding: 0 20px;
+   padding: 0 0.5em;
    margin: 0;
    border-bottom: solid 1px black;
    font-size: 1em;
@@ -95,7 +104,7 @@ table, th, td {
 
 .navbar ul {
    padding: 0;
-   margin: 10px;
+   margin: 0.25em;
 }
 
 .navbar li {
@@ -116,8 +125,8 @@ table, th, td {
 
 .sidebar {
    grid-area: sidebar;
-   padding: 0 20px;
-   margin: 0 0 10px 0;
+   padding: 0 0.5em;
+   margin: 0 0 0.25em 0;
 }
 
 .sidebar .postlink  {
@@ -128,7 +137,7 @@ table, th, td {
 .footer {
    grid-area: footer;
    /*border-top: solid 1px black;*/
-   padding: 50px 20px;
+   padding: 1em 0.5em;
 }
 
 
@@ -137,7 +146,7 @@ table, th, td {
       display: grid;
       grid-gap: 0px;
       grid-template-columns: 1fr;
-      grid-template-rows: none 1fr none none 50px;
+      grid-template-rows: none 1fr none none 1em;
       grid-template-areas:
          "header"
          "navbar"
@@ -157,7 +166,7 @@ table, th, td {
       display: grid;
       grid-gap: 0px;
       grid-template-columns: 1fr 1fr 1fr 1fr;
-      grid-template-rows: none none 50px;
+      grid-template-rows: none none 1em;
       grid-template-areas:
          "header  header  navbar  navbar" 
          "sidebar content content content" 
