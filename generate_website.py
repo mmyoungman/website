@@ -41,7 +41,6 @@ if __name__ == "__main__":
         else:
             return False
     post_list = [post for post in sorted(os.listdir("content/")) if is_a_post(post)]
-    print('post_list: ', post_list)
 
     postlist_html = ""
     i = 0
