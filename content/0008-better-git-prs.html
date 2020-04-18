@@ -1,0 +1,162 @@
+Better pull requests with interactive rebasing
+18th April 2020
+
+<p>I am like most developers in that, rightly or wrongly, the most I pause before creating a pull request is to create a cleanup commit. PRs are often littered with unnecessary commits, and the commits themselves don't intentionally demonstrate the thought process behind the changes made.</p>
+
+<p>There is much scope to improve. In a time when documentation is frequently trumpeted, I'm inclined to think logically grouping, ordering, and labelling the commits made in a PR can probably help more. And as it could be part of a workflow, it may be easier to stick to than an additional task that is easily forgotten like documentation.</p>
+
+<h3>Clear commit messages</h3>
+
+<p>Commit messages are the obvious starting point to improve a PR, but you can only have a good commit message if the commit changes themselves are explicative -- even with no message.</p>
+
+<p>That said, it is the lowest hanging fruit -- particularly if, like me, you have created many-a-commit like</p>
+
+<pre>
+git commit -m"TKT-999 Fixes the thing"
+</pre>
+
+<p>There are already good guides for <a href="https://chris.beams.io/posts/git-commit/">writing commit messages</a> -- and interactive rebasing can help reword commit message before creating a PR.</p>
+
+<h3>Beyond the commit message</h3>
+
+<p>There are others ways to improve PRs that aren't often discussed:</p>
+
+<ul>
+  <li>the grouping of changes made in a PR -- is each step clearly demarcated?</li>
+  <li>the order of those changes -- is it logical?</li>
+  <li>whether some commits on a PR need to exist at all</li>
+</ul>
+
+<p>Interactive rebase can be used to manipulate commits on your branch before creating a PR. A commit that fixes a typo, for example, can be squashed. Consider this example:</p>
+
+<pre>
+[mark@dantes example-repo [master]]$ git log
+commit f001584020e873aa89a3063c29c7f29fcf87317a (HEAD -&gt; master)
+Author: Mark Youngman
+Date:   Sat Apr 18 20:04:57 2020 +0100
+
+    Add even more text to test.txt
+
+commit 5ad7fb8c8a632cf36863534104fb1bfb1d27fc59
+Author: Mark Youngman
+Date:   Sat Apr 18 20:04:23 2020 +0100
+
+    Fix typo in test.txt
+
+commit 42c9d470c400f4502031dfea23977693b9973023
+Author: Mark Youngman
+Date:   Sat Apr 18 20:01:42 2020 +0100
+
+    Added more text to test.txt
+
+commit b3e17ee7b2f605482e67f812ff6fea313a74fd0f
+Author: Mark Youngman
+Date:   Sat Apr 18 19:40:04 2020 +0100
+
+    Added test.txt
+</pre>
+
+<p>This can be fixed as follows:</p>
+
+<pre>
+git rebase -i HEAD~3
+</pre>
+
+<p>On starting the interactive rebase, instructions are provided:</p>
+
+<pre>
+ 6 # Commands:
+ 7 # p, pick &lt;commit&gt; = use commit
+ 8 # r, reword &lt;commit&gt; = use commit, but edit the commit message
+ 9 # e, edit &lt;commit&gt; = use commit, but stop for amending
+10 # s, squash &lt;commit&gt; = use commit, but meld into previous commit
+11 # f, fixup &lt;commit&gt; = like "squash", but discard this commit's log message
+12 # x, exec &lt;command&gt; = run command (the rest of the line) using shell
+13 # b, break = stop here (continue rebase later with 'git rebase --continue')
+14 # d, drop &lt;commit&gt; = remove commit
+15 # l, label &lt;label&gt; = label current HEAD with a name
+16 # t, reset &lt;label&gt; = reset HEAD to a label
+17 # m, merge [-C &lt;commit&gt; | -c &lt;commit&gt;] &lt;label&gt; [# &lt;oneline&gt;]
+18 # .       create a merge commit using the original merge commit's
+19 # .       message (or the oneline, if no original merge commit was
+20 # .       specified). Use -c &lt;commit&gt; to reword the commit message.
+21 #
+22 # These lines can be re-ordered; they are executed from top to bottom.
+23 #
+24 # If you remove a line here THAT COMMIT WILL BE LOST.
+25 #
+26 # However, if you remove everything, the rebase will be aborted.
+</pre>
+
+<p>In this instance, you change <code>pick</code> on the relevant commit to <code>f</code> for fixup:</p>
+
+<pre>
+1 pick 42c9d47 Added more text to test.txt
+2 <span style="color:red">f</span> 5ad7fb8 Fix typo in test.txt   
+3 pick f001584 Add even more text to test.txt
+</pre>
+
+<p>In a different situation, evidence of the typo may still exist in your PR. To erase all evidence, you can use <code>rebase -i</code> to amend the appropriate commit:</p>
+
+<pre>
+git rebase -i master
+[replace 'pick' on the appropriate commit with 'e']
+[fix the typo]
+git add [file]
+git commit --amend
+git rebase --continue
+</pre>
+
+<h3>Commits as steps towards a complete feature</h3>
+
+<p>After squashing unnecessary commits, a PR can be further improved by having each commit be a logical step towards the completed feature. This means the PR can be read commit by commit, showing why the feature was developed as it was.</p>
+
+<p>This ordered grouping of changes often isn't the case with PRs. The steps towards the completed feature are spread amongst different commits, so rather than</p>
+
+<pre>
+Commit 1: Finish step A
+Commit 2: Finish step B
+Commit 3: Finish step C
+Commit 4: Finish step D
+</pre>
+
+<p>you have</p>
+
+<pre>
+Commit 1: A little bit of A and C
+Commit 2: Finish A and start B
+Commit 3: Finish B and C and D
+</pre>
+
+<p>Ideally, making your PRs more like the former than the latter is done by having the discipline to identify the steps before starting work on a feature. Back in the real world, some cleanup will be required before creating your PR.</p>
+
+<p>With <code>rebase -i</code>, this cleanup can largely be done by rewording, squashing, and editing commits. However, in some instances you may want to split a commit.</p>
+
+<h3>Splitting a commit</h3>
+
+<p>Changes across two commits are probably simpler to follow than both combined. For that reason, alongside padding your commit stats, splitting a commit can make sense.
+<p>A commit can be split by following these steps:</p>
+
+<pre>
+git log
+[make a note of the hash of the commit you wish to split]
+git rebase -i master
+[replace 'pick' to 'e' on the commit immediately _before_ the commit you wish to split]
+git checkout [commit_hash] -- . # Assuming you're in your project's root dir
+git restore --staged .
+[restage the files with the changes you want to appear in the 1st of the two commits]
+git commit -m"Your commit message" # Note we create a new commit -- not amend!
+git rebase --continue
+</pre>
+
+<p>If you're going to make such changes before creating a PR, it's probably best to make clone your branch before making them, so you can check the two branches for unintentional differences afterwards.</p>
+
+<h3>Worth the effort?</h3>
+
+<p>I'm only starting to think about this, and it is uncertain to me whether time spent is worth it. But I can imagine several benefits:</p>
+
+<ul>
+  <li>Your code (possibly) improves by practicing the above</li>
+  <li>Your code is easier to understand and review</li>
+  <li>You look professional</li>
+</ul>
