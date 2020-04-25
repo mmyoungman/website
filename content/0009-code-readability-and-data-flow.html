@@ -1,0 +1,67 @@
+Code readability and data flow
+25 April 2020
+
+<p>While working on a test framework a while back, a particular piece of functionality inspired some thought about the relationship between the flow of data and code readability. I found that iterating towards less code meant the code, as written, no longer represented the flow of data. It was therefore left to the reader to work out the flow themselves.</p>
+
+<h3>The functionality in question</h3>
+
+<p>You can see code at the time of writing <a href="https://gitlab.com/mmyoungman/test-test-framework/tree/544e1422e8f03f98469ac9b0c0b2042c37228bda">here</a>.</p>
+
+<p>The test framework allows users to create test suites by subclassing the TestSuite class. They can then add tests to that subclass by creating a new method and prefixing <code>test__</code> to its name.</p>
+
+<p>To implement this in Python, we need to:</p>
+
+<ul>
+  <li>get a list of all the method names of the class</li>
+  <li>filter for names that start <code>test__</code></li> 
+  <li>use those test names to grab their associated methods</li>
+  <li>and then add those methods to a list of tests to run</li>
+</ul>
+
+<p>It turns out this can be achieved concisely:</p>
+
+<pre>
+for test_name in filter(lambda name: name.startswith('test__'), dir(self)):
+  self.tests_to_run.append(getattr(self, test_name))
+</pre>
+
+<p>After starting with something much longer, it's satisfying code to iterate to, but is it good?</p>
+
+<h3>Clever code is dumb code?</h3>
+
+<p>If the reader has knowledge of Python -- understands filter, dir, etc. -- they may not need a search engine. But even so, they still have unpacking to do.</p>
+
+<p>If we put the code aside and consider how the data is processed, it starts at the <code>dir(self)</code>, which returns a list of method names for the current class. It's the first thing we need to progress towards what we want: a list of test methods to run. But this isn't the first thing a reader would see. Instead, <code>dir(self)</code> is at the end of the first line, nested inside a function call.</p>
+
+<p>This means that to understand this code, the reader is forced to read the code multiple times, jump back and forwards, to identify the flow of data for themselves.</p>
+
+<h3>Target audience</h3>
+
+<p>Even for an experienced Python developer it would require some mental overhead, and that all adds to the overhead of the code's larger context. People can only hold so many things in their head at once.</p>
+
+<p>This reaches to a larger topic: who is the target audience and what does the coder wish to communicate to them. I believe the same issue is found in writing.</p>
+
+<p>Consider <a href="https://docs.google.com/viewer?a=v&pid=sites&srcid=ZGVmYXVsdGRvbWFpbnxmaWN0aW9ud2l0aGdyZWd5d3cyMDE1fGd4OmJjNGQ1ZWE1NWI0MDBlMw">The School by Donald Barthelme</a>. On the surface the writing seems simple, but if you try to emulate his style it become apparent that behind that simplicity is great skill.</p>
+
+<p>Compare Barthelme with <a href="http://www.gutenberg.org/files/34181/34181-h/34181-h.htm#chapI">Irene Iddesleigh by Amanda McKittrick Ros</a>. Ros is out to impress, to the comical detriment of the writing itself.</p>
+
+<p>Writing often wants to be stylish, to entertain, but I think code should to be workman's prose. It shouldn't draw attention to itself.</p>
+
+<h3>The narrative of the data</h3>
+
+<p>For me, the problem with the above code is that it prioritises conciseness over accurately representing the flow of data. The reader wants to understand the narrative of the data -- its journey from start to end.</p>
+
+<p>Here is the code I ended up with:</p>
+
+<pre>
+method_name_list = dir(self)
+is_test = lambda name: name.startswith('test__')
+test_name_list = filter(is_test, method_name_list)
+for name in test_name_list:
+  method = getattr(self, name)
+  self.tests_to_run.append(method)
+</pre>
+
+<p>The transformation of data can be followed in order by reading from top to bottom -- it matches the steps I gave earlier. And with the additional variable names, it's possible for a reader unfamiliar with the in-built functions called to infer what the code does.</p>
+
+<p>I like the idea that code should be accessible to the inexperienced. I'm going to try and stick to this when coding in the future.</p>
