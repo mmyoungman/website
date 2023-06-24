@@ -1,40 +1,58 @@
 To framework or not to framework? That's the question
 20 June 2023
 
-<p>With frameworks, you can hit the ground running. They allow inexperienced programmers who aren't domain experts to produce working solutions to common yet difficult problems. New recruits with prior knowledge of the framework (in theory) become productive quicker. You can feel safe that many others are using the same code, providing assurances around security and scalability; they are tried and tested.</p>
+<p>For particular problems, you can hit the ground running by using a framework. They allow programmers who aren't domain experts to produce working solutions to common yet difficult problems. You can feel safe that many others are using the same code, providing some assurance around things like security and scalability.</p>
 
-<p>When you first start using a framework, it can feel like it's giving you many things for free. And they do. But there is a cost to be paid, mostly due to the complexity of frameworks:</p>
+<p>When you first start a project using a framework, it can feel like it's giving you many things for free. And it is. But even with a good framework, there is a longer-term cost to be paid:</p>
 
 <ul>
-  <li>Frameworks make assumptions about what you want to do, limiting the control you have over the solution; the framework features you use won't be perfectly suited to your problem. With some problems, the framework may become a hinderance.</li>
-  <li>Frameworks provide features your project won't need, resulting in the complexity dwarfing a custom-designed solution - extra complexity programmers must dig through.</li>
-  <li>The size of frameworks makes it practically impossible to fully understand them. A lack of knowledge or a mistaken assumption about how something works will often lead to issues.</li>
+  <li>Frameworks make assumptions about what you want to do, limiting the control you have over the solution; the framework won't be perfectly suited to your problem. With some problems, the framework may become a hinderance.</li>
+  <li>Frameworks provide features your project won't need - that's extra complexity programmers must dig through to understand the features they are using.</li>
+  <li>The size of frameworks makes it practically impossible to fully understand them. It takes significant time to both learn and keep up to date. A lack of knowledge or a mistaken assumption about how something works will often lead to bad decisions, and unforeseen and costly issues.</li>
 </ul>
 
 <h3>Building from scratch</h3>
 
-<p>Starting from scratch definitely isn't right for every project, but I think the difficulty of doing so is generally overestimated. There is a large upfront cost, but with a good foundation established, I think programmer productivity and the quality of the solution can skyrocket:</p>
+<p>I think the difficulty of building from scratch is generally overestimated and the on-going cost of using a framework is generally underestimated. If a good custom foundation is established, I think programmer productivity and the quality of the solution can skyrocket:</p>
 
 <ul>
-  <li>The solution is simpler, so new features require less work.</li>
   <li>The solution is specific to your problem, meaning there is less code and complexity to contend with.</li>
   <li>You maintain complete control. There is no need to work around someone else's ill-fitting code.</li>
-  <li>You fully understand your solution, since you (and/or your team) implemented it.</li>
   <li>You are forced to fully understand the problem you are tackling.</li>
+  <li>You will better understand your solution, since you (and/or your team) implemented it.</li>
 </ul>
 
-<p>All that said, the early stage of a project will need much more care, is much more make-or-break.</p>
+<p>All that said, the early stages of a project will need much more care. The quality of the foundation will be determined by your skill and knowledge. It requires knowledge of the problem domain you're working in and/or the skill to quickly adapt to new problems you're unfamiliar with. It requires research of possible solutions, and then careful selection of the right approach for your project. Even if the difficulty is generally overestimated, it's still far from trivial.</p>
 
-<p>The quality of the foundation will be determined by the skill of your programmers. It requires knowledge of the problem domain you're working in, or the ability to quickly adapt to new problems you're unfamiliar with. It requires research of possible solutions, and then careful selection of the right approach for your project. This is far from trivial.</p>
+<p>If that gauntlet can be navigated, the rewards are potentially huge. But if things go wrong, it could be catastrophic. This risk is unacceptable for many projects.</p>
 
-<p>If that gauntlet is navigated well, the rewards are potentially huge. But if things go wrong, it could be catastrophic, and the failure may not be apparent till sometime later. This risk is probably unacceptable for most companies.</p>
+<h3>When is a framework the right choice?</h3>
+
+<p>I think frameworks are the right tool for many projects, particularly those involving a team of a programmers. But even then, if your team lacks knowledge of the problem domain you're tackling or a deep knowledge of the framework, mistakes will be made. However, with a few experienced programmers, I think the chances of delivering a working solution are increased dramatically, although the quality of that solution may be compromised - the sluggish responsiveness of most mobile apps comes to mind.</p>
+
+<p>Frameworks also provide a tried-and-tested solution as many issues will have already been ironed out. From scratch, unless you're deeply familiar with a particular problem space, you will need many iteratations to reach a similarly usable and reliable solution. And if you do introduce issues, they may only become apparent later, when it has become costly to fix them.</p>
+
+<h3>When is a framework the wrong choice?</h3>
+
+<p>There are a few reasons to not use a framework:</p>
+
+<ul>
+  <li>Unique problem - There is no framework suited to the problem you're trying to solve.
+  <li>You have deep problem domain knowledge - If you understand a particular problem domain well, if you are more productive starting from scratch and can produce a higher-quality solution, then a framework is a limitation. Maybe you can even provide a foundation that makes large teams more productive.</li>
+  <li>To better utilise frameworks - Tackling a problem without a framework will give you problem domain knowledge, and thereby a general idea of how frameworks themselves solve that problem. This allows you to utilise those frameworks better. You will better understand the consequences of your decisions, and therefore be more likely to follow good practices.</li>
+  <li>Improve general programming skill - Good frameworks can provide enough leeway for bad practices to survive: their full consequences aren't fully felt, because the foundation is solid. Starting from scratch, compared to using a framework, is the equivalent of putting your skills in a furnace: impurities are more likely to be revealed and removed.</li>
+</ul>
 
 <h3>Final thoughts</h3>
 
-<p>My current thinking is that frameworks are the right tool for many projects, particularly those involving large teams of salaried programmers. Although even then, if your team lacks knowledge of the problem domain you're tackling or a deep knowledge of the framework being used, the framework won't prevent complexity from spiraling out of control. However, with a few experts on a team, I think the chances of delivering a working solution are increased dramatically.</p>
+<p>We may be moving towards a future where a generalist programmer who can tackle any problem is increasingly rare or even unfeasible. With quantum programming, maybe it's already impossible.</p>
 
-<p>For me personally, I have no intention of using frameworks for personal projects. It does increase the difficulty, but I think this is the right decision for programmers who want to be experts at their craft, and want to reap the associated rewards in solution quality and productivity. Frankly, I think frameworks don't cut it if you're attempting to solve ambitious, unique, and interesting problems.</p>
+<p>But even in an x64/arm world, despite any commonalities, 3D rendering and creating a website, for example, are unique problems with their own quirks. Our understanding of how to best tackle such problems has been improved by past failures. And maybe in the future the best way to solve such problems won't be to study that history in detail yourself, but to use a framework that has collected proven solutions.</p>
 
-<p>But even if I am wrong, by working from scratch I still gain knowledge of different problem domains, of how to design and architect solutions for those problems, which makes me more effective when using frameworks.</p>
+<p>Maybe some frameworks will reach a level of maturity - not just be this decade's fashionable trend - such that the benefits of avoiding them, in most cases, won't be worth the cost.</p>
 
-<p>I want to to reliably produce good working solutions without a framework holding my hand. And I think starting from scratch helps someone to learn just that: the consequences of bad practices cannot be ignored. And most importantly, the challenge of building from scratch is much more fun than gluing other people's code together.</p>
+<p>That said, I currently think that the quintessential skill of a programmer is the ability to successfully navigate a new problem domain.</p>
+
+<p>There are mistakes that can be made with frameworks, like not following a framework's established way of handling a particular problem. But putting such mistakes aside, even in a world where frameworks are used by most projects, all projects have their idiosyncracies. Programmers earn their pay when tackling a problem that the framework or a dependency doesn't solve. That's when months or even years of developer time is lost or won.</p>
+
+<p>For me personally, I have no intention of using frameworks for personal projects, even if there is a framework for the problem I'm trying to solve. It does increase the difficulty, but I think this is the right decision for someone primarily interested in learning their craft, and who wants to reap the longer-term rewards in solution quality and productivity.</p>
