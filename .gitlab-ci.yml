@@ -1,9 +1,9 @@
-image: python:3.8
+image: golang:1.21
 
 pages:
     stage: deploy
     script:
-    - python3 generate_website.py
+    - go run -tags "prod" .
     artifacts:
         paths:
         - public

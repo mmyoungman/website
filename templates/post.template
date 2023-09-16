@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
    <head>
-      <meta charset="UTF-8" />
+      <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <title>Mark Youngman's Website</title>
-      <link rel='stylesheet' type='text/css', href='style.css' />
-      <link rel='shortcut icon' href='images/favicon.ico' type='iamges/x-icon' />
+      <link rel='stylesheet' type='text/css', href='style.css'>
+      <link rel='shortcut icon' href='images/favicon.ico' type='images/x-icon'>
    </head>
 
    <body>
@@ -28,11 +28,13 @@
             <p><a href=about.html>Mark is a software engineer from Sheffield, UK</a></p> 
 
             <h2>Posts</h2>
-            {{{postlist}}}
+            {{ range .PostList }}
+            <a class="postlink" href="{{ .Link }}">{{ .Text }}</a>
+            {{ end }}
          </div>
 
          <div class="grid content">
-            {{{posts}}}
+            {{ .Content }}
 
             <h3>
               <center>
