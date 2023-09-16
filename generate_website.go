@@ -95,7 +95,7 @@ func main() {
 	archiveContent := template.HTML("<h1>Archive</h1>\n")
 	for i := len(posts)-1; i >= 0; i-- {
 		archiveContent += template.HTML("<h2>" + posts[i].Date + "</h2>\n")
-		archiveContent += template.HTML("<a href='" + posts[i].FileName + "'>" + posts[i].Title + "</a>>\n<br><br>\n")
+		archiveContent += template.HTML("<a href='" + posts[i].FileName + "'>" + posts[i].Title + "</a>\n<br><br>\n")
 	}
 
 	func() {
