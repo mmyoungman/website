@@ -125,8 +125,6 @@ func main() {
 			}{postlinks, postContent})
 		}()
 	}
-
-	panic("testing panic on build pipeline")
 }
 
 func createPostFile(fileName string) (result PostFile) {
