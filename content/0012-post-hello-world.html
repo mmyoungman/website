@@ -1,0 +1,28 @@
+Problems in a post "Hello world!" world
+21st October 2023
+
+<p>When someone starts programming today, they often deploy and wrangle other people's code. As they begin that undertaking, they're also often met with a culture that values code over end-users value. These early experiences shape a person's understanding of what programming is and how it is done.</p>
+
+<p>Beginners are provided instant gratification. They are rewarded for skipping the fundamentals of programming - most notably the ability to understand and follow program state during execution. There is little incentive to ever take a step back and learn those fundamentals.</p>
+
+<p>This has led many programming subcultures to believe going low level and/or rolling your own is a mistake. It's easy to understand why: starting from scratch takes considerable skill and knowledge. Your first few attempts will inevitably meet failure, and shine a light on a long path ahead. It's considered a fool's errand. Why continue on that path when dependencies offer an easier route?</p>
+
+<p>This lack of fundamentals has much longer term consequences than a Fizz Buzz test in a job interview. In my view, someone who primarily plumbs together unknown code will introduce unnecessary complexity, because they don't understand what the underlying computer is actually doing, and therefore will judge their solution on misguided metrics, such as the look or the cleverness of the code. The tool is no longer used to achieve an end, but becomes the primary consideration.</p>
+
+<h3>Code plumbing</h3>
+
+<p>Code plumbing rewards hacking over understanding. The code being used is unknown, complex, voluminous. Instead of understanding the code, which would take years, people are incentivised to use trial and error until they get the result they want. Even as a programmer improves, no matter how intelligent they may be, their instinctive habit will be to hack.</p>
+
+<p>Another factor is that they won't develop good metrics for software quality. When plumbing, you don't need to learn to build good, maintainable abstractions, since any abstractions you do create will tend to be fairly shallow. This means the full catastrophy of writing bad abstractions isn't revealed. And then the wider culture starts celebrating particular abstractions in books, and the authority held by those abstractions ends up trumping concerns about whether they suit the particular context in which they are being used.</p>
+
+<p>One personal anecdote of this is a software architect that complained the developers were "ruining the purity of [their] vision". In reality, the architect's vision didn't survive contact with reality, but the architect refused to reassess whether their suggested abstraction was appropriate, despite being shown the problems with it.</p>
+
+<p>This boils down to having a bad measure of software quality. And in turn results in programmers chasing metrics that are counterproductive to end-user value:</p>
+
+<blockquote>"Programmers are bright people who are (often justly) proud of their ability to handle complexity and juggle abstractions. Often they compete with their peers to see who can build the most intricate and beautiful complexities. Just as often, their ability to design outstrips their ability to implement and debug, and the result is expensive failure." - Douglas McIlroy quoted in The Art of Unix Programming</blockquote>
+
+<h3>Back to life. Back to reality</h3>
+
+<p>This state of affairs is living on borrowed time, because ideas formed on the basis of a disconnection from what the code does or bad metrics for software quality will ultimately lose in the battle of ideas as the projects using those ideas fail.</p>
+
+<p>How long it will take for them to lose that battle is another question. In medicine, bloodletting was misused for (according to Wikipedia) over 2,000 years. So for all that time, a practice widely considered beneficial was actually harming patients. I don't know what the solution is, but if we don't want the same for programming, we need to develop the programming equivalent of double-blind trials.</p>
