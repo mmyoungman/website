@@ -32,8 +32,7 @@ func main() {
 		if name == "fonts" ||
 			name == "images" ||
 			name == "style.css" ||
-			name == "keybase.txt" ||
-			name == "about.html" {
+			name == "keybase.txt" {
 			continue
 		}
 		os.Remove("./public/" + name)
@@ -89,6 +88,39 @@ func main() {
 			PostList []PostLink
 			Content  template.HTML
 		}{postlinks, frontpageContent})
+	}()
+
+	//create about.html
+	var aboutContent template.HTML
+	func() {
+		f, err := os.Open("content/about.html")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+
+		scanner := bufio.NewScanner(f)
+
+		for scanner.Scan() {
+			aboutContent += template.HTML(scanner.Text())
+		}
+
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+	func() {
+		about_template := template.Must(template.ParseFiles("templates/about.template"))
+
+		f, err := os.Create("./public/about.html")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+
+		about_template.Execute(f, struct {
+			Content  template.HTML
+		}{aboutContent})
 	}()
 
 	// create archive.html
