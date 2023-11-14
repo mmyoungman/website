@@ -19,13 +19,14 @@
                <li class="active"><a href="index.html">Home</a></li>
                <li><a href="about.html">About</a></li>
                <li><a href="archive.html">Archive</a></li>
+               <li><a href="notes.html">Notes</a></li>
                <li><a href="http://www.github.com/mmyoungman">GitHub</a></li>
             </ul>
          </div>
 
          <div class="grid sidebar">
             <h2>About Mark</h2>
-            <p><a href=about.html>Mark is a software engineer from Sheffield, UK</a></p> 
+            <p><a href=about.html>Mark is a software engineer from Sheffield, UK</a></p>
 
             <h2>Posts</h2>
             {{ range .PostList }}

@@ -28,6 +28,7 @@
                <li class="active"><a href="index.html">Home</a></li>
                <li><a href="about.html">About</a></li>
                <li><a href="archive.html">Archive</a></li>
+               <li><a href="notes.html">Notes</a></li>
                <li><a href="http://www.github.com/mmyoungman">GitHub</a></li>
             </ul>
          </div>

@@ -1,5 +1,5 @@
 Plunge into PinMode -- Behind the Libraries Part Two
-21th October 2018
+21 October 2018
 
 <p>In <a href="0002-behind-the-libraries-diving-into-digitalwrite.html">the first article of this series</a>, we saw how to can turn pins on or off on an Arduino Uno by directly writing 1s or 0s to specific registers. Today, we'll explore how to change the mode of a pin.</p>
 <p>The pinMode function essentially works the same as our replacement for digitalWrite, in that we replace the function call by changing a particular bit in specific memory location. But there is a wrinkle. digitalWrite only had two possible values to set a pin (HIGH or LOW) and therefore one bit of memory was sufficient to cover both options. With pinMode, this isn't the case, as it allows us to set three different modes: INPUT, OUTPUT, and INPUT_PULLUP. We need at least two bits.</p>
