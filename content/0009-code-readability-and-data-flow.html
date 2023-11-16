@@ -7,23 +7,23 @@ Code readability and data flow
 
 <p>You can see code at the time of writing <a href="https://gitlab.com/mmyoungman/test-test-framework/tree/544e1422e8f03f98469ac9b0c0b2042c37228bda">here</a>.</p>
 
-<p>The test framework allows users to create test suites by subclassing the TestSuite class. They can then add tests to that subclass by creating a new method and prefixing <code>test__</code> to its name.</p>
+<p>The test framework allows users to create test suites by subclassing the TestSuite class. They can then add tests to that subclass by creating a new method and prefixing <pre>test__</pre> to its name.</p>
 
 <p>To implement this in Python, we need to:</p>
 
 <ul>
   <li>get a list of all the method names of the class</li>
-  <li>filter for names that start <code>test__</code></li> 
+  <li>filter for names that start <code>test__</code></li>
   <li>use those test names to grab their associated methods</li>
   <li>and then add those methods to a list of tests to run</li>
 </ul>
 
 <p>It turns out this can be achieved concisely:</p>
 
-<pre>
-for test_name in filter(lambda name: name.startswith('test__'), dir(self)):
-  self.tests_to_run.append(getattr(self, test_name))
-</pre>
+<code>
+  for test_name in filter(lambda name: name.startswith('test__'), dir(self)):<br/>
+    self.tests_to_run.append(getattr(self, test_name))<br/>
+</code>
 
 <p>After starting with something much longer, it's satisfying code to iterate to, but is it good?</p>
 
@@ -53,14 +53,14 @@ for test_name in filter(lambda name: name.startswith('test__'), dir(self)):
 
 <p>Here is the code I ended up with:</p>
 
-<pre>
-method_name_list = dir(self)
-is_test = lambda name: name.startswith('test__')
-test_name_list = filter(is_test, method_name_list)
-for name in test_name_list:
-  method = getattr(self, name)
-  self.tests_to_run.append(method)
-</pre>
+<code>
+  method_name_list = dir(self)<br/>
+  is_test = lambda name: name.startswith('test__')<br/>
+  test_name_list = filter(is_test, method_name_list)<br/>
+  for name in test_name_list:<br/>
+    method = getattr(self, name)<br/>
+    self.tests_to_run.append(method)<br/>
+</code>
 
 <p>The transformation of data can be followed in order by reading from top to bottom -- it matches the steps I gave earlier. And with the additional variable names, it's possible for a reader unfamiliar with the in-built functions called to infer what the code does.</p>
 

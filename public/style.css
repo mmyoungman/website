@@ -52,13 +52,8 @@ blockquote {
     font-size: 0.9em;
 }
 
-code {
-    color: grey;
-    background-color: black;
-    padding: 2px;
-}
-
-pre {
+pre, code {
+    display: table;
     color: grey;
     background-color: black;
     padding: 0.25em;
@@ -170,8 +165,8 @@ table, th, td {
       grid-template-columns: 1fr 1fr 1fr 1fr;
       grid-template-rows: none none 1em;
       grid-template-areas:
-         "header  header  navbar  navbar" 
-         "sidebar content content content" 
+         "header  header  navbar  navbar"
+         "sidebar content content content"
          "footer  footer  footer  footer";
    }
 
