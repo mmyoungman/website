@@ -2,10 +2,14 @@
 
 package main
 
-import "github.com/mmyoungman/website/nostr"
+import (
+	"database/sql"
+
+	"github.com/mmyoungman/website/nostr"
+)
 
 func UNUSED(x ...interface{}) {}
 
-func FetchNewNostrMessages() {
-	nostr.FetchNewNostrMessages()
+func FetchNewNostrMessages(db *sql.DB) {
+	nostr.FetchNewNostrMessages(db)
 }

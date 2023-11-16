@@ -27,11 +27,13 @@ type PostFile struct {
 }
 
 func main() {
+	db := nostr.DBConnect()
+	defer db.Close()
+
 	// fetch latest nostr notes
-	FetchNewNostrMessages()
+	FetchNewNostrMessages(db)
 
 	// fetch nostr notes from DB
-	db := nostr.DBConnect()
 	nostrEvents := nostr.DBGetEvents(db)
 
 	// clear public folder

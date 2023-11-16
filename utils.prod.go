@@ -2,6 +2,11 @@
 
 package main
 
+import (
+	"database/sql"
+)
+
+
 // No declaration of func UNUSED here
 
-func FetchNewNostrMessages() {}
+func FetchNewNostrMessages(db *sql.DB) {}
