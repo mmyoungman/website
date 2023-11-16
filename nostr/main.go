@@ -7,7 +7,6 @@ import (
 )
 
 func FetchNewNostrMessages() {
-	//npub := "1f0rwg0z2smrkggypqn7gctscevu22z6thch243365xt0tz8fw9uqupzj2x"
 	npubHex := "4bc6e43c4a86c764208104fc8c2e18cb38a50b4bbe2eaac63aa196f588e97178"
 
 	db := DBConnect()

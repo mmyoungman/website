@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"html/template"
 	"log"
-	"github.com/mmyoungman/website/nostr"
 	"net/url"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/mmyoungman/website/internal/bech32"
+	"github.com/mmyoungman/website/nostr"
 )
 
 type PostLink struct {
@@ -159,7 +161,7 @@ eventLoop:
 					continue
 				}
 				if !strings.HasPrefix(link, "https://") {
-					log.Printf("note link needs 'https://' to added to it - %s", link)
+					log.Printf("note link needs 'https://' added - %s", link)
 					link = "https://" + link
 				}
 
@@ -183,9 +185,9 @@ eventLoop:
 		}
 		date := time.Unix(nostrEvents[i].CreatedAt, 0)
 		notesContent += template.HTML(fmt.Sprintf("<h2>%02d:%02d, %d %s %d</h2>\n", date.Hour(), date.Minute(), date.Day(), date.Month().String(), date.Year()))
-
-		notesContent += template.HTML(fmt.Sprintf("<p>%s</p>\n\n", content))
-		//notesContent += template.HTML(fmt.Sprintf("<p>%s</p><p><a href=\"https://snort.social/nevent%s\">Link</a></p>\n\n", content, nostrEvents[i].Id)) // @MarkFix need bech32
+		notesContent += template.HTML(fmt.Sprintf("<p>%s</p>\n", content))
+		bech32NoteId := bech32.Encode("note", nostrEvents[i].Id)
+		notesContent += template.HTML(fmt.Sprintf("<p><small><a href=\"nostr:%s\">Link</a></small></p>\n\n", bech32NoteId))
 	}
 
 	func() {

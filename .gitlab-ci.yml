@@ -5,7 +5,7 @@ before_script:
 pages:
     stage: deploy
     script:
-    - go run -tags "prod" .
+    - go run -tags prod .
     artifacts:
         paths:
         - public
