@@ -1,5 +1,7 @@
 image: golang:1.21
 
+before_script:
+    - git submodule update --init
 pages:
     stage: deploy
     script:
