@@ -22,7 +22,7 @@ Code readability and data flow
 
 <code>
   for test_name in filter(lambda name: name.startswith('test__'), dir(self)):<br/>
-    self.tests_to_run.append(getattr(self, test_name))<br/>
+  &nbsp;&nbsp;self.tests_to_run.append(getattr(self, test_name))<br/>
 </code>
 
 <p>After starting with something much longer, it's satisfying code to iterate to, but is it good?</p>
@@ -58,8 +58,8 @@ Code readability and data flow
   is_test = lambda name: name.startswith('test__')<br/>
   test_name_list = filter(is_test, method_name_list)<br/>
   for name in test_name_list:<br/>
-    method = getattr(self, name)<br/>
-    self.tests_to_run.append(method)<br/>
+  &nbsp;&nbsp;method = getattr(self, name)<br/>
+  &nbsp;&nbsp;self.tests_to_run.append(method)<br/>
 </code>
 
 <p>The transformation of data can be followed in order by reading from top to bottom -- it matches the steps I gave earlier. And with the additional variable names, it's possible for a reader unfamiliar with the in-built functions called to infer what the code does.</p>
