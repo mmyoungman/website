@@ -5,12 +5,11 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"github.com/mmyoungman/website/nostr"
 	"net/url"
 	"os"
 	"strings"
 	"time"
-
-	"github.com/mmyoungman/nostr_backup"
 )
 
 type PostLink struct {
@@ -30,8 +29,8 @@ func main() {
 	FetchNewNostrMessages()
 
 	// fetch nostr notes from DB
-	db := nostr_backup.DBConnect()
-	nostrEvents := nostr_backup.DBGetEvents(db)
+	db := nostr.DBConnect()
+	nostrEvents := nostr.DBGetEvents(db)
 
 	// clear public folder
 	publicFiles, err := os.ReadDir("./public")
@@ -138,7 +137,7 @@ func main() {
 	notesContent := template.HTML("<h1>Notes</h1>\n")
 eventLoop:
 	for i := len(nostrEvents) - 1; i >= 0; i-- {
-		if nostrEvents[i].Kind != nostr_backup.KindTextNote { // && nostrEvents[i].Kind != nostr_backup.KindRepost { // @MarkFix TODO support reposts
+		if nostrEvents[i].Kind != nostr.KindTextNote { // && nostrEvents[i].Kind != nostr.KindRepost { // @MarkFix TODO support reposts
 			continue
 		}
 

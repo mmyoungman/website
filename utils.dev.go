@@ -2,10 +2,10 @@
 
 package main
 
-import "github.com/mmyoungman/nostr_backup"
+import "github.com/mmyoungman/website/nostr"
 
 func UNUSED(x ...interface{}) {}
 
 func FetchNewNostrMessages() {
-	nostr_backup.FetchNewNostrMessages()
+	nostr.FetchNewNostrMessages()
 }
