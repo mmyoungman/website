@@ -48,7 +48,7 @@ func DBInsertEvent(db *sql.DB, event Event) (eventsAdded int) {
 
 	result, err := stm.Exec(event.Id,
 		event.PubKey, event.CreatedAt, event.Kind,
-		event.Tags.ToJson(), event.Content, event.Sig) // @MarkFix
+		event.Tags.ToJson(), event.Content, event.Sig)
 	if err != nil {
 		log.Fatal("Failed to execute query to insert new event", err)
 	}
