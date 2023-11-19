@@ -77,11 +77,11 @@ func main() {
 	// create index.html
 	post_template := template.Must(template.ParseFiles("templates/post.template"))
 
-	var frontpageContent template.HTML
+	var frontpageContent strings.Builder
 	numFrontpagePosts := 5
 	for i := len(posts) - 1; i >= 0 && i > len(posts)-1-numFrontpagePosts; i-- {
-		frontpageContent += template.HTML(posts[i].Content)
-		frontpageContent += template.HTML("<br><br><br>\n\n")
+		frontpageContent.WriteString(posts[i].Content)
+		frontpageContent.WriteString("<br><br><br>\n\n")
 	}
 
 	func() {
@@ -93,11 +93,11 @@ func main() {
 		post_template.Execute(f, struct {
 			PostList []PostLink
 			Content  template.HTML
-		}{postlinks, frontpageContent})
+		}{postlinks, template.HTML(frontpageContent.String())})
 	}()
 
 	//create about.html
-	var aboutContent template.HTML
+	var aboutContent strings.Builder
 	func() {
 		f, err := os.Open("content/about.html")
 		if err != nil {
@@ -108,7 +108,7 @@ func main() {
 		scanner := bufio.NewScanner(f)
 
 		for scanner.Scan() {
-			aboutContent += template.HTML(scanner.Text())
+			aboutContent.WriteString(scanner.Text())
 		}
 
 		if err := scanner.Err(); err != nil {
@@ -126,10 +126,11 @@ func main() {
 
 		about_template.Execute(f, struct {
 			Content template.HTML
-		}{aboutContent})
+		}{template.HTML(aboutContent.String())})
 	}()
 
 	// create notes.html
+	// @MarkFix this will require pagination at some point
 	nostrEvents := func() []nostr.Event {
 		db := nostr.DBConnect()
 		defer db.Close()
@@ -141,7 +142,8 @@ func main() {
 		return nostr.DBGetEvents(db)
 	}()
 
-	notesContent := template.HTML("<h1>Notes</h1>\n")
+	var notesContent strings.Builder
+	notesContent.WriteString("<h1>Notes</h1>\n")
 eventLoop:
 	for i := len(nostrEvents) - 1; i >= 0; i-- {
 		if nostrEvents[i].Kind != nostr.KindTextNote { // && nostrEvents[i].Kind != nostr.KindRepost { // @MarkFix TODO support reposts
@@ -190,11 +192,11 @@ eventLoop:
 		}
 		date := time.Unix(nostrEvents[i].CreatedAt, 0)
 		bech32NoteId := bech32.Encode("note", nostrEvents[i].Id)
-		notesContent += template.HTML(fmt.Sprintf("<div id=\"%s\">\n", bech32NoteId))
-		notesContent += template.HTML(fmt.Sprintf("<h2>%02d:%02d, %d %s %d</h2>\n", date.Hour(), date.Minute(), date.Day(), date.Month().String(), date.Year()))
-		notesContent += template.HTML(fmt.Sprintf("<p>%s</p>\n", content))
-		notesContent += template.HTML(fmt.Sprintf("<p><small><a href=\"nostr:%s\">Link</a></small></p>\n\n", bech32NoteId))
-		notesContent += template.HTML("</div>")
+		notesContent.WriteString(fmt.Sprintf("<div id=\"%s\">\n", bech32NoteId))
+		notesContent.WriteString(fmt.Sprintf("<h2>%02d:%02d, %d %s %d</h2>\n", date.Hour(), date.Minute(), date.Day(), date.Month().String(), date.Year()))
+		notesContent.WriteString(fmt.Sprintf("<p>%s</p>\n", content))
+		notesContent.WriteString(fmt.Sprintf("<p><small><a href=\"nostr:%s\">Link</a></small></p>\n\n", bech32NoteId))
+		notesContent.WriteString("</div>")
 	}
 
 	func() {
@@ -206,14 +208,15 @@ eventLoop:
 		post_template.Execute(f, struct {
 			PostList []PostLink
 			Content  template.HTML
-		}{postlinks, notesContent})
+		}{postlinks, template.HTML(notesContent.String())})
 	}()
 
 	// create archive.html
-	archiveContent := template.HTML("<h1>Archive</h1>\n")
+	var archiveContent strings.Builder
+	archiveContent.WriteString("<h1>Archive</h1>\n")
 	for i := len(posts) - 1; i >= 0; i-- {
-		archiveContent += template.HTML("<h2>" + posts[i].Date + "</h2>\n")
-		archiveContent += template.HTML("<a href='" + posts[i].FileName + "'>" + posts[i].Title + "</a>\n<br><br>\n")
+		archiveContent.WriteString("<h2>" + posts[i].Date + "</h2>\n")
+		archiveContent.WriteString("<a href='" + posts[i].FileName + "'>" + posts[i].Title + "</a>\n<br><br>\n")
 	}
 
 	func() {
@@ -225,7 +228,7 @@ eventLoop:
 		post_template.Execute(f, struct {
 			PostList []PostLink
 			Content  template.HTML
-		}{postlinks, archiveContent})
+		}{postlinks, template.HTML(archiveContent.String())})
 	}()
 
 	// create post files
@@ -264,15 +267,18 @@ func createPostFile(fileName string) (result PostFile) {
 		result.Date = scanner.Text()
 	}
 
-	result.Content = "<h1>" + result.Title + "</h1>"
-	result.Content += "<h2>" + result.Date + "</h2>"
+	var resultContent strings.Builder
+	resultContent.WriteString("<h1>" + result.Title + "</h1>")
+	resultContent.WriteString("<h2>" + result.Date + "</h2>")
 	for scanner.Scan() {
-		result.Content += scanner.Text()
+		resultContent.WriteString(scanner.Text())
 	}
 
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
+
+	result.Content = resultContent.String()
 
 	return result
 }
