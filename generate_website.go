@@ -189,10 +189,12 @@ eventLoop:
 			}
 		}
 		date := time.Unix(nostrEvents[i].CreatedAt, 0)
+		bech32NoteId := bech32.Encode("note", nostrEvents[i].Id)
+		notesContent += template.HTML(fmt.Sprintf("<div id=\"%s\">\n", bech32NoteId))
 		notesContent += template.HTML(fmt.Sprintf("<h2>%02d:%02d, %d %s %d</h2>\n", date.Hour(), date.Minute(), date.Day(), date.Month().String(), date.Year()))
 		notesContent += template.HTML(fmt.Sprintf("<p>%s</p>\n", content))
-		bech32NoteId := bech32.Encode("note", nostrEvents[i].Id)
 		notesContent += template.HTML(fmt.Sprintf("<p><small><a href=\"nostr:%s\">Link</a></small></p>\n\n", bech32NoteId))
+		notesContent += template.HTML("</div>")
 	}
 
 	func() {
