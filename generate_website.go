@@ -27,15 +27,6 @@ type PostFile struct {
 }
 
 func main() {
-	db := nostr.DBConnect()
-	defer db.Close()
-
-	// fetch latest nostr notes
-	FetchNewNostrMessages(db)
-
-	// fetch nostr notes from DB
-	nostrEvents := nostr.DBGetEvents(db)
-
 	// clear public folder
 	publicFiles, err := os.ReadDir("./public")
 	if err != nil {
@@ -46,7 +37,8 @@ func main() {
 		if name == "fonts" ||
 			name == "images" ||
 			name == "style.css" ||
-			name == "keybase.txt" {
+			name == "keybase.txt" ||
+			name == ".well-known" {
 			continue
 		}
 		os.Remove("./public/" + name)
@@ -138,6 +130,17 @@ func main() {
 	}()
 
 	// create notes.html
+	nostrEvents := func() []nostr.Event {
+		db := nostr.DBConnect()
+		defer db.Close()
+
+		// fetch latest nostr notes
+		FetchNewNostrMessages(db)
+
+		// fetch nostr notes from DB
+		return nostr.DBGetEvents(db)
+	}()
+
 	notesContent := template.HTML("<h1>Notes</h1>\n")
 eventLoop:
 	for i := len(nostrEvents) - 1; i >= 0; i-- {
