@@ -1,6 +1,6 @@
 # Mark Youngman's Website
 
-This repository contains code to statically generated my website.
+This repository contains code to statically generate my website.
 
 ## To generate the website for production
 

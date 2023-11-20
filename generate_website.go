@@ -153,6 +153,7 @@ eventLoop:
 		content := nostrEvents[i].Content
 		for _, tag := range nostrEvents[i].Tags {
 			if tag[0] == "r" && len(tag) == 2 {
+				originalLink := tag[1]
 				link := tag[1]
 				_, err := url.Parse(link)
 				if err != nil {
@@ -173,10 +174,10 @@ eventLoop:
 				}
 
 				if strings.HasSuffix(link, ".jpg") {
-					content = strings.Replace(content, link, fmt.Sprintf("<br><img style=\"max-width: 40%%;\" src=\"%s\" />", link), 1)
+					content = strings.Replace(content, originalLink, fmt.Sprintf("<br><img style=\"max-width: 40%%;\" src=\"%s\" />", link), 1)
 				// @MarkFix Something for YouTube videos?
 				} else {
-					content = strings.Replace(content, link, fmt.Sprintf("<a href=\"%s\">%s</a>", link, link), 1)
+					content = strings.Replace(content, originalLink, fmt.Sprintf("<a href=\"%s\">%s</a>", link, originalLink), 1)
 				}
 			}
 			// @MarkFix TODO What to do with replies?
