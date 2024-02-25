@@ -136,7 +136,7 @@ func main() {
 		defer db.Close()
 
 		// fetch latest nostr notes
-		FetchNewNostrMessages(db)
+		nostr.FetchNewNostrMessages(db)
 
 		// fetch nostr notes from DB
 		return nostr.DBGetEvents(db)
@@ -168,7 +168,7 @@ eventLoop:
 					log.Printf("note contents should have contained link")
 					continue
 				}
-				if !strings.HasPrefix(link, "https://") {
+				if !strings.HasPrefix(link, "https://") && !strings.HasPrefix(link, "http://") {
 					log.Printf("note link needs 'https://' added - %s", link)
 					link = "https://" + link
 				}
