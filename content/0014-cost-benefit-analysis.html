@@ -1,0 +1,38 @@
+Cost-benefit analysis in programming
+20 May 2024
+
+<blockquote>And no, the answer is ABSOLUTELY NOT to add cognitive load on kernel developers by adding yet more random helper types and/or functions.</blockquote>
+
+<blockquote>We already expect a lot of kernel developers. We should not add on to that burden because of your pet project.</blockquote>
+
+<blockquote>-- <a href="https://lore.kernel.org/lkml/CAHk-=wjeiGb1UxCy6Q8aif50C=wWDX9Pgp+WbZYrO72+B1f_QA@mail.gmail.com/">Linus Torvald</a></blockquote>
+
+<p>In his latest tirade, Linus Torvalds highlights something I think is often done badly in development: cost-benefit analysis of a change. In this case, a developer has a focus on security, while Torvalds leans towards protecting the developer experience (in the "DX" sense).</p>
+
+<p>I don't think it's uncommon for a developer to pontifcate on the importance of a specific thing - like security - and thereby miss the bigger picture. We often don't consider why we weigh things as we do.</p>
+
+<h3>Example: switching dependencies</h3>
+
+<p>Switching from an old dependency to a new one can be an example where long-term costs are underestimated.</p>
+
+<p>New dependencies take time to learn and that's a cost often eaten by the entire team. Dependencies also have idiosyncracies to learn, further adding to that cost. Then there is the cost of multiple approaches to do one thing (or the time to switch from the existing approach to the new one).</p>
+
+<p>If this cost was avoided and the team stuck to it's initial approach, then developers would become increasingly efficient with the tools and approach they use. Their skills would become increasingly refined, leading to huge efficiency gains.</p>
+
+<p>This isn't to say that this is true in all instances, but in my experience these types of costs are underweighed if they're considered at all. And that, in cases like this, the weighing scales are strongly tipped in one direction.</p>
+
+<h3>The best approach</h3>
+
+<p>With so many people weighing things differently, it's important to be able to identify who is correct from who is misguided. Software development is an engineering disipline - so there <i>is</i> a correct answer.</p>
+
+<p>I think the solution is that no cost-benefit analysis can be done if <b>A)</b> developers haven't considered what they're trying to achieve from first principles and <b>B)</b> developers aren't thoughtful about <i>all</i> the costs and benefits of changes they propose.</p>
+
+<p>These take diligent consideration and don't provide easy answers. So while I think the answer to A) should (hopefully) begin and end with the user, there are many nuanced points around that. What level of performance is acceptable? How maintainable should the project be?</p>
+
+<p>But it also can be as simple as considering the cost/benefit of any change, even minor ones. As I try to weight the cost-benefit of changes more and more, I find myself getting less concerned with minutia - which tend to have little effect and are easily corrected even if they do - and more concerned with preventing large, ongoing, difficult-to-fix costs. I'm also more willing to make small compromises for efficiency.</p>
+
+<p>It's easy to get enthralled by the benefit of a change and not fully consider the less obvious costs. And the costs, as I hope my switching dependencies point above demonstrates, can be considerable, and are often compounded by simliar decisions being made repeatedly.</p>
+
+<p>All the more reason to ask ourselves: Is there an aspect of coding which I get pontifical about? What benefits are am I clinging to / overestimating? What costs am I missing / underestimating?</p>
+
+<blockquote>"The beginner chases the right answers. The master chases the right questions."</blockquote>
