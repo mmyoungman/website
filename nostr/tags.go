@@ -1,7 +1,6 @@
 package nostr
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -33,7 +32,8 @@ func writeTag(result *strings.Builder, tag Tag) {
 		if i > 0 {
 			result.WriteString(",")
 		}
-		result.WriteString(fmt.Sprintf("\"%s\"", str))
+		escapedStr := DecorateJsonStr(str)
+		result.WriteString(escapedStr)
 	}
 
 	result.WriteString("]")

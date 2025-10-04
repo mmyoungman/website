@@ -128,7 +128,7 @@ func ProcessMessages(connList *ConnectionList, db *sql.DB) (numOfMessages int, n
 			}
 			generatedEventId := eventMessage.Event.GenerateEventId()
 			if generatedEventId != eventMessage.Event.Id {
-				log.Fatal("Incorrect Id received!")
+				log.Fatalf("EventId does not match expected eventId!\ngeneratedEventId: %s\neventMessage: %+v", generatedEventId, eventMessage)
 			}
 
 			eventHasValidSig := eventMessage.Event.IsSigValid()
