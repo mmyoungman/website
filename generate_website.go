@@ -38,9 +38,11 @@ func main() {
 			name == "images" ||
 			name == "style.css" ||
 			name == "keybase.txt" ||
-			name == ".well-known" {
+			name == ".well-known" ||
+		        name == "games" {
 			continue
 		}
+		// TODO: I don't think this actually deletes directories if we weren't ignoring them
 		os.Remove("./public/" + name)
 	}
 
@@ -127,6 +129,40 @@ func main() {
 		about_template.Execute(f, struct {
 			Content template.HTML
 		}{template.HTML(aboutContent.String())})
+	}()
+
+	//create games.html
+	var gamesContent strings.Builder
+	func() {
+		f, err := os.Open("content/games.html")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+
+		scanner := bufio.NewScanner(f)
+
+		for scanner.Scan() {
+			gamesContent.WriteString(scanner.Text())
+		}
+
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+	func() {
+		// use the about_template for the games page too
+		about_template := template.Must(template.ParseFiles("templates/about.template"))
+
+		f, err := os.Create("./public/games.html")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+
+		about_template.Execute(f, struct {
+			Content template.HTML
+		}{template.HTML(gamesContent.String())})
 	}()
 
 	// create notes.html
@@ -285,7 +321,7 @@ func createPostFile(fileName string) (result PostFile) {
 }
 
 func isPost(name string) (result bool) {
-	if name == "about.html" || strings.HasPrefix(name, "0000-") {
+	if name == "about.html" || name == "games.html" || strings.HasPrefix(name, "0000-") {
 		return false
 	}
 	if strings.HasSuffix(name, ".html") {
