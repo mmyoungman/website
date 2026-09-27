@@ -14,14 +14,18 @@ type Connection struct {
 	Subscriptions []Subscription
 }
 
-func Connect(server string, messageChan chan websocket.WSConnectionMessage) *Connection {
+func Connect(server string, messageChan chan websocket.WSConnectionMessage) (*Connection, error) {
 	var conn Connection
 	conn.Server = server
 	conn.DoneChan = make(chan error)
 
-	conn.WSConnection = websocket.Connect(server, messageChan, conn.DoneChan)
+	wsConn, err := websocket.Connect(server, messageChan, conn.DoneChan)
+	if err != nil {
+		return nil, err
+	}
+	conn.WSConnection = wsConn
 
-	return &conn
+	return &conn, nil
 }
 
 func (conn *Connection) Close() {

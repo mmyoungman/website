@@ -26,7 +26,11 @@ func CreateConnectionList() *ConnectionList {
 }
 
 func (cl *ConnectionList) AddConnection(server string) {
-	newConn := Connect(server, cl.MessageChan)
+	newConn, err := Connect(server, cl.MessageChan)
+	if err != nil {
+		log.Println("Skipping relay:", err)
+		return
+	}
 	newConn.Server = server
 	cl.Connections = append(cl.Connections, newConn)
 }

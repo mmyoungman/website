@@ -1,6 +1,7 @@
 package websocket
 
 import (
+	"fmt"
 	"log"
 	"net/url"
 
@@ -14,16 +15,19 @@ type WSConnectionMessage struct {
 
 type WSConnection = *websocket.Conn
 
-func Connect(server string, messageChan chan WSConnectionMessage, doneChan chan error) WSConnection {
+func Connect(server string, messageChan chan WSConnectionMessage, doneChan chan error) (WSConnection, error) {
 	URL := url.URL{Scheme: "wss", Host: server}
-	conn, _, err := websocket.DefaultDialer.Dial(URL.String(), nil)
+	conn, resp, err := websocket.DefaultDialer.Dial(URL.String(), nil)
 	if err != nil {
-		log.Fatal("Failed to connect to websocket", server, err)
+		if resp != nil {
+			return nil, fmt.Errorf("failed to connect to websocket %s: %w (HTTP %s)", server, err, resp.Status)
+		}
+		return nil, fmt.Errorf("failed to connect to websocket %s: %w", server, err)
 	}
 
 	go receiveMessages(server, conn, messageChan, doneChan)
 
-	return conn
+	return conn, nil
 }
 
 func receiveMessages(server string, conn WSConnection, messageChan chan WSConnectionMessage, doneChan chan error) {
